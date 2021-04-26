@@ -6,6 +6,7 @@ import (
 	"io"
 	"io/fs"
 
+	"github.com/alecthomas/chroma"
 	"github.com/go-swiss/fonts"
 	"github.com/yuin/goldmark/util"
 )
@@ -91,6 +92,13 @@ func WithBodyFont(f Font) Option {
 func WithCodeFont(f Font) Option {
 	return OptionFunc(func(c *Config) {
 		c.Styles.CodeFont = f
+	})
+}
+
+// Set the code block chroma theme
+func WithCodeBlockTheme(theme *chroma.Style) Option {
+	return OptionFunc(func(c *Config) {
+		c.Styles.CodeBlockTheme = theme
 	})
 }
 
