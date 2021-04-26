@@ -80,37 +80,7 @@ func DefaultStyles() Styles {
 		TextColor: color.RGBA{0, 0, 0, 0}, FillColor: color.RGBA{240, 240, 240, 0}}
 
 	c.CodeFont = FontRobotoMono
-	c.CodeBlockTheme = styles.Register(chroma.MustNewStyle("custom", chroma.StyleEntries{
-		chroma.Background:           "#cccccc bg:#1d1d1d",
-		chroma.Comment:              "bold #999999",
-		chroma.CommentSpecial:       "bold #cd0000",
-		chroma.Keyword:              "#cc99cd",
-		chroma.KeywordDeclaration:   "#cc99cd",
-		chroma.KeywordNamespace:     "#cc99cd",
-		chroma.KeywordType:          "#cc99cd",
-		chroma.Operator:             "#67cdcc",
-		chroma.OperatorWord:         "#cdcd00",
-		chroma.NameClass:            "#f08d49",
-		chroma.NameBuiltin:          "#f08d49",
-		chroma.NameFunction:         "#f08d49",
-		chroma.NameException:        "bold #666699",
-		chroma.NameVariable:         "#00cdcd",
-		chroma.LiteralString:        "#7ec699",
-		chroma.LiteralNumber:        "#f08d49",
-		chroma.LiteralStringBoolean: "#f08d49",
-		chroma.GenericHeading:       "bold #000080",
-		chroma.GenericSubheading:    "bold #800080",
-		chroma.GenericDeleted:       "#e2777a",
-		chroma.GenericInserted:      "#cc99cd",
-		chroma.GenericError:         "#e2777a",
-		chroma.GenericEmph:          "italic",
-		chroma.GenericStrong:        "bold",
-		chroma.GenericPrompt:        "bold #000080",
-		chroma.GenericOutput:        "#888",
-		chroma.GenericTraceback:     "#04D",
-		chroma.GenericUnderline:     "underline",
-		chroma.Error:                "border:#e2777a",
-	}))
+	c.CodeBlockTheme = styles.Monokai
 
 	return c
 }
