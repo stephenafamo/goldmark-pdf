@@ -181,7 +181,7 @@ func (f Fpdf) MeasureTextWidth(text string) float64 {
 func (f Fpdf) SplitText(txt string, w float64) []string {
 	lines := f.Fpdf.SplitLines([]byte(txt), w)
 
-	var split = make([]string, len(lines))
+	split := make([]string, len(lines))
 	for k, line := range lines {
 		split[k] = string(line)
 	}

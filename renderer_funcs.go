@@ -35,7 +35,6 @@ type nodeRederFuncs struct{}
 
 // RegisterFuncs implements NodeRenderer.RegisterFuncs .
 func (r *nodeRederFuncs) RegisterFuncs(reg NodeRendererFuncRegisterer) {
-
 	// blocks
 	reg.Register(ast.KindDocument, r.renderDocument)
 	reg.Register(ast.KindHeading, r.renderHeading)
@@ -84,39 +83,51 @@ func (r *nodeRederFuncs) renderHeading(w *Writer, source []byte, node ast.Node, 
 		switch n.Level {
 		case 1:
 			w.LogDebug("Heading (1, entering)", "")
-			x := &state{containerType: n.Kind(),
-				textStyle: *w.Styles.H1, listkind: notlist,
-				leftMargin: w.States.peek().leftMargin}
+			x := &state{
+				containerType: n.Kind(),
+				textStyle:     *w.Styles.H1, listkind: notlist,
+				leftMargin: w.States.peek().leftMargin,
+			}
 			w.States.push(x)
 		case 2:
 			w.LogDebug("Heading (2, entering)", "")
-			x := &state{containerType: n.Kind(),
-				textStyle: *w.Styles.H2, listkind: notlist,
-				leftMargin: w.States.peek().leftMargin}
+			x := &state{
+				containerType: n.Kind(),
+				textStyle:     *w.Styles.H2, listkind: notlist,
+				leftMargin: w.States.peek().leftMargin,
+			}
 			w.States.push(x)
 		case 3:
 			w.LogDebug("Heading (3, entering)", "")
-			x := &state{containerType: n.Kind(),
-				textStyle: *w.Styles.H3, listkind: notlist,
-				leftMargin: w.States.peek().leftMargin}
+			x := &state{
+				containerType: n.Kind(),
+				textStyle:     *w.Styles.H3, listkind: notlist,
+				leftMargin: w.States.peek().leftMargin,
+			}
 			w.States.push(x)
 		case 4:
 			w.LogDebug("Heading (4, entering)", "")
-			x := &state{containerType: n.Kind(),
-				textStyle: *w.Styles.H4, listkind: notlist,
-				leftMargin: w.States.peek().leftMargin}
+			x := &state{
+				containerType: n.Kind(),
+				textStyle:     *w.Styles.H4, listkind: notlist,
+				leftMargin: w.States.peek().leftMargin,
+			}
 			w.States.push(x)
 		case 5:
 			w.LogDebug("Heading (5, entering)", "")
-			x := &state{containerType: n.Kind(),
-				textStyle: *w.Styles.H5, listkind: notlist,
-				leftMargin: w.States.peek().leftMargin}
+			x := &state{
+				containerType: n.Kind(),
+				textStyle:     *w.Styles.H5, listkind: notlist,
+				leftMargin: w.States.peek().leftMargin,
+			}
 			w.States.push(x)
 		case 6:
 			w.LogDebug("Heading (6, entering)", "")
-			x := &state{containerType: n.Kind(),
-				textStyle: *w.Styles.H6, listkind: notlist,
-				leftMargin: w.States.peek().leftMargin}
+			x := &state{
+				containerType: n.Kind(),
+				textStyle:     *w.Styles.H6, listkind: notlist,
+				leftMargin: w.States.peek().leftMargin,
+			}
 			w.States.push(x)
 		}
 	} else {
@@ -157,9 +168,11 @@ func (r *nodeRederFuncs) renderBlockquote(w *Writer, source []byte, node ast.Nod
 	if entering {
 		w.LogDebug("BlockQuote (entering)", "")
 		curleftmargin, _, _, _ := w.Pdf.GetMargins()
-		x := &state{containerType: ast.KindBlockquote,
-			textStyle: *w.Styles.Blockquote, listkind: notlist,
-			leftMargin: curleftmargin + indent}
+		x := &state{
+			containerType: ast.KindBlockquote,
+			textStyle:     *w.Styles.Blockquote, listkind: notlist,
+			leftMargin: curleftmargin + indent,
+		}
 		w.States.push(x)
 		w.Pdf.SetMarginLeft(curleftmargin + indent)
 	} else {
@@ -336,10 +349,12 @@ func (r *nodeRederFuncs) renderList(w *Writer, source []byte, node ast.Node, ent
 		w.Pdf.SetMarginLeft(w.States.peek().leftMargin)
 		w.LogDebug("... List Left Margin", fmt.Sprintf("set to %v", w.States.peek().leftMargin))
 
-		x := &state{containerType: ast.KindList,
-			textStyle: *w.Styles.Normal, itemNumber: 0,
+		x := &state{
+			containerType: ast.KindList,
+			textStyle:     *w.Styles.Normal, itemNumber: 0,
 			listkind:   kind,
-			leftMargin: w.States.peek().leftMargin}
+			leftMargin: w.States.peek().leftMargin,
+		}
 
 		w.Pdf.BR(LH)
 
@@ -369,11 +384,13 @@ func (r *nodeRederFuncs) renderListItem(w *Writer, source []byte, node ast.Node,
 		// set the cursor to this point
 		w.Pdf.SetX(X)
 
-		x := &state{containerType: ast.KindListItem,
-			textStyle: *w.Styles.Normal, itemNumber: w.States.peek().itemNumber + 1,
+		x := &state{
+			containerType: ast.KindListItem,
+			textStyle:     *w.Styles.Normal, itemNumber: w.States.peek().itemNumber + 1,
 			listkind:       w.States.peek().listkind,
 			firstParagraph: true,
-			leftMargin:     X}
+			leftMargin:     X,
+		}
 		w.States.push(x)
 
 		// add bullet or itemnumber; then set left margin for the
@@ -422,7 +439,7 @@ func (r *nodeRederFuncs) renderParagraph(w *Writer, source []byte, node ast.Node
 			return ast.WalkContinue, nil
 		}
 		w.Pdf.BR(w.States.peek().textStyle.Size + w.States.peek().textStyle.Spacing)
-		//w.cr()
+		// w.cr()
 	} else {
 		w.LogDebug("Paragraph (leaving)", "")
 		lm, tm, rm, bm := w.Pdf.GetMargins()
@@ -483,10 +500,12 @@ func (r *nodeRederFuncs) renderThematicBreak(w *Writer, source []byte, node ast.
 func (r *nodeRederFuncs) renderLink(w *Writer, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	n := node.(*ast.Link)
 	if entering {
-		x := &state{containerType: ast.KindLink,
-			textStyle: *(w.GetLinkStyle()), listkind: notlist,
+		x := &state{
+			containerType: ast.KindLink,
+			textStyle:     *(w.GetLinkStyle()), listkind: notlist,
 			leftMargin:  w.States.peek().leftMargin,
-			destination: string(n.Destination)}
+			destination: string(n.Destination),
+		}
 		w.States.push(x)
 		w.LogDebug("Link (entering)", fmt.Sprintf("Destination[%v] Title[%v]", string(n.Destination), string(n.Title)))
 	} else {
@@ -514,10 +533,12 @@ func (r *nodeRederFuncs) renderAutoLink(w *Writer, source []byte, node ast.Node,
 
 	w.LogDebug("AutoLink", fmt.Sprintf("Destination[%v] Title[%v]", destination, string(label)))
 
-	x := &state{containerType: ast.KindAutoLink,
-		textStyle: *(w.GetLinkStyle()), listkind: notlist,
+	x := &state{
+		containerType: ast.KindAutoLink,
+		textStyle:     *(w.GetLinkStyle()), listkind: notlist,
 		leftMargin:  w.States.peek().leftMargin,
-		destination: destination}
+		destination: destination,
+	}
 	w.States.push(x)
 	w.WriteText(string(label))
 	w.States.pop()
@@ -529,9 +550,11 @@ func (r *nodeRederFuncs) renderCodeSpan(w *Writer, source []byte, n ast.Node, en
 	// maintain the container type so we can draw links
 	if entering {
 		w.LogDebug("Code (entering)", "")
-		x := &state{containerType: ast.KindCodeSpan,
-			textStyle: *(w.GetBacktickStyle()), listkind: notlist,
-			leftMargin: w.States.peek().leftMargin, destination: w.States.peek().destination}
+		x := &state{
+			containerType: ast.KindCodeSpan,
+			textStyle:     *(w.GetBacktickStyle()), listkind: notlist,
+			leftMargin: w.States.peek().leftMargin, destination: w.States.peek().destination,
+		}
 		w.States.push(x)
 	} else {
 		w.LogDebug("Code (leaving)", "")
@@ -550,7 +573,7 @@ func (r *nodeRederFuncs) renderImage(w *Writer, source []byte, node ast.Node, en
 		w.LogDebug("Image (entering)", fmt.Sprintf("Destination[%v] Title[%v]", string(n.Destination), string(n.Title)))
 		// following changes suggested by @sirnewton01, issue #6
 		// does file exist?
-		var imgPath = string(n.Destination)
+		imgPath := string(n.Destination)
 		imgFile, err := w.ImageFS.Open(imgPath)
 		if err == nil {
 			defer imgFile.Close()
@@ -637,9 +660,11 @@ func (r *nodeRederFuncs) renderTaskCheckBox(w *Writer, source []byte, node ast.N
 func (r *nodeRederFuncs) renderTable(w *Writer, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	if entering {
 		w.LogDebug("Table (entering)", "")
-		x := &state{containerType: east.KindTable,
-			textStyle: *w.Styles.THeader, listkind: notlist,
-			leftMargin: w.States.peek().leftMargin}
+		x := &state{
+			containerType: east.KindTable,
+			textStyle:     *w.Styles.THeader, listkind: notlist,
+			leftMargin: w.States.peek().leftMargin,
+		}
 		w.Pdf.BR(w.States.peek().textStyle.Size + w.States.peek().textStyle.Spacing)
 		w.States.push(x)
 		fill = false
@@ -662,9 +687,11 @@ func (r *nodeRederFuncs) renderTable(w *Writer, source []byte, node ast.Node, en
 func (r *nodeRederFuncs) renderTableHeader(w *Writer, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	if entering {
 		w.LogDebug("TableHead (entering)", "")
-		x := &state{containerType: east.KindTableHeader,
-			textStyle: *w.Styles.THeader, listkind: notlist,
-			leftMargin: w.States.peek().leftMargin, isHeader: true}
+		x := &state{
+			containerType: east.KindTableHeader,
+			textStyle:     *w.Styles.THeader, listkind: notlist,
+			leftMargin: w.States.peek().leftMargin, isHeader: true,
+		}
 		w.States.push(x)
 		cellwidths = make([]float64, 0)
 	} else {
@@ -678,9 +705,11 @@ func (r *nodeRederFuncs) renderTableRow(w *Writer, source []byte, node ast.Node,
 	if entering {
 		w.LogDebug("TableRow (entering)", "")
 		isHeader := w.States.peek().isHeader
-		x := &state{containerType: east.KindTableRow,
-			textStyle: *w.Styles.TBody, listkind: notlist,
-			leftMargin: w.States.peek().leftMargin, isHeader: isHeader}
+		x := &state{
+			containerType: east.KindTableRow,
+			textStyle:     *w.Styles.TBody, listkind: notlist,
+			leftMargin: w.States.peek().leftMargin, isHeader: isHeader,
+		}
 		if w.States.peek().isHeader {
 			x.textStyle = *w.Styles.THeader
 		}
@@ -704,9 +733,11 @@ func (r *nodeRederFuncs) renderTableCell(w *Writer, source []byte, node ast.Node
 	if entering {
 		w.LogDebug("TableCell (entering)", "")
 		isHeader := w.States.peek().isHeader
-		x := &state{containerType: east.KindTableCell,
-			textStyle: *w.Styles.Normal, listkind: notlist,
-			leftMargin: w.States.peek().leftMargin, isHeader: isHeader}
+		x := &state{
+			containerType: east.KindTableCell,
+			textStyle:     *w.Styles.Normal, listkind: notlist,
+			leftMargin: w.States.peek().leftMargin, isHeader: isHeader,
+		}
 		if isHeader {
 			w.Pdf.SetDrawColor(128, 0, 0)
 			w.Pdf.SetLineWidth(.3)

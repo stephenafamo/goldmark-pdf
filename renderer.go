@@ -85,9 +85,11 @@ func (r *renderer) Render(w io.Writer, source []byte, n ast.Node) error {
 	}
 
 	mleft, _, _, _ := pdf.GetMargins()
-	initcurrent := &state{containerType: ast.KindParagraph,
-		listkind:  notlist,
-		textStyle: *r.config.Styles.Normal, leftMargin: mleft}
+	initcurrent := &state{
+		containerType: ast.KindParagraph,
+		listkind:      notlist,
+		textStyle:     *r.config.Styles.Normal, leftMargin: mleft,
+	}
 	writer.States.push(initcurrent)
 
 	err = ast.Walk(n, func(n ast.Node, entering bool) (ast.WalkStatus, error) {

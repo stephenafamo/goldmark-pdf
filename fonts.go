@@ -71,7 +71,6 @@ func GetCodeFont(family string, fallback Font) Font {
 }
 
 func addStyleFonts(ctx context.Context, pdf PDF, styles Styles, fontsCache fonts.Cache) error {
-
 	fontsToLoad := []Font{
 		styles.H1.Font,
 		styles.H2.Font,

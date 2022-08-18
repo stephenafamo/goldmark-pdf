@@ -13,8 +13,11 @@ const (
 // in the header of a table. These will be the widths used
 // in the table body as well.
 var cellwidths []float64
-var curdatacell int
-var fill = false
+
+var (
+	curdatacell int
+	fill        = false
+)
 
 func (n listType) String() string {
 	switch n {

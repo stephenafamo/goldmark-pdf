@@ -85,7 +85,6 @@ func (f Impl) WriteText(h float64, text string) {
 	if err != nil {
 		panic(err)
 	}
-
 }
 
 func (f Impl) CellFormat(w float64, h float64, txtStr string, borderStr string, ln int, alignStr string, fill bool, link int, linkStr string) {
@@ -112,7 +111,7 @@ func (f Impl) CellFormat(w float64, h float64, txtStr string, borderStr string, 
 	}
 	border = 0
 
-	var float = gopdf.Right
+	float := gopdf.Right
 	if ln == 1 {
 		float = gopdf.Bottom
 	}
@@ -244,7 +243,7 @@ func (f Impl) GetMargins() (left, top, right, bottom float64) {
 func (f Impl) AddFont(family string, styleStr string, data []byte) error {
 	styleStr = strings.ToUpper(styleStr)
 
-	var style = gopdf.Regular
+	style := gopdf.Regular
 	if strings.Contains(styleStr, "B") {
 		style = style | gopdf.Bold
 	}

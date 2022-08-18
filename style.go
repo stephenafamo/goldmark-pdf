@@ -55,29 +55,49 @@ type Styles struct {
 func DefaultStyles() Styles {
 	c := Styles{}
 
-	c.Normal = &Style{Font: FontRoboto, Size: 12, Spacing: 3,
-		TextColor: color.RGBA{0, 0, 0, 0}, FillColor: color.RGBA{255, 255, 255, 0}}
+	c.Normal = &Style{
+		Font: FontRoboto, Size: 12, Spacing: 3,
+		TextColor: color.RGBA{0, 0, 0, 0}, FillColor: color.RGBA{255, 255, 255, 0},
+	}
 
-	c.H1 = &Style{Font: FontRoboto, Size: 24, Spacing: 5,
-		TextColor: color.RGBA{0, 0, 0, 0}, FillColor: color.RGBA{255, 255, 255, 0}}
-	c.H2 = &Style{Font: FontRoboto, Size: 22, Spacing: 5,
-		TextColor: color.RGBA{0, 0, 0, 0}, FillColor: color.RGBA{255, 255, 255, 0}}
-	c.H3 = &Style{Font: FontRoboto, Size: 20, Spacing: 5,
-		TextColor: color.RGBA{0, 0, 0, 0}, FillColor: color.RGBA{255, 255, 255, 0}}
-	c.H4 = &Style{Font: FontRoboto, Size: 18, Spacing: 5,
-		TextColor: color.RGBA{0, 0, 0, 0}, FillColor: color.RGBA{255, 255, 255, 0}}
-	c.H5 = &Style{Font: FontRoboto, Size: 16, Spacing: 5,
-		TextColor: color.RGBA{0, 0, 0, 0}, FillColor: color.RGBA{255, 255, 255, 0}}
-	c.H6 = &Style{Font: FontRoboto, Size: 14, Spacing: 5,
-		TextColor: color.RGBA{0, 0, 0, 0}, FillColor: color.RGBA{255, 255, 255, 0}}
+	c.H1 = &Style{
+		Font: FontRoboto, Size: 24, Spacing: 5,
+		TextColor: color.RGBA{0, 0, 0, 0}, FillColor: color.RGBA{255, 255, 255, 0},
+	}
+	c.H2 = &Style{
+		Font: FontRoboto, Size: 22, Spacing: 5,
+		TextColor: color.RGBA{0, 0, 0, 0}, FillColor: color.RGBA{255, 255, 255, 0},
+	}
+	c.H3 = &Style{
+		Font: FontRoboto, Size: 20, Spacing: 5,
+		TextColor: color.RGBA{0, 0, 0, 0}, FillColor: color.RGBA{255, 255, 255, 0},
+	}
+	c.H4 = &Style{
+		Font: FontRoboto, Size: 18, Spacing: 5,
+		TextColor: color.RGBA{0, 0, 0, 0}, FillColor: color.RGBA{255, 255, 255, 0},
+	}
+	c.H5 = &Style{
+		Font: FontRoboto, Size: 16, Spacing: 5,
+		TextColor: color.RGBA{0, 0, 0, 0}, FillColor: color.RGBA{255, 255, 255, 0},
+	}
+	c.H6 = &Style{
+		Font: FontRoboto, Size: 14, Spacing: 5,
+		TextColor: color.RGBA{0, 0, 0, 0}, FillColor: color.RGBA{255, 255, 255, 0},
+	}
 
-	c.Blockquote = &Style{Font: FontRoboto, Size: 14, Spacing: 1,
-		TextColor: color.RGBA{0, 0, 0, 0}, FillColor: color.RGBA{255, 255, 255, 0}}
+	c.Blockquote = &Style{
+		Font: FontRoboto, Size: 14, Spacing: 1,
+		TextColor: color.RGBA{0, 0, 0, 0}, FillColor: color.RGBA{255, 255, 255, 0},
+	}
 
-	c.THeader = &Style{Font: FontRoboto, Size: 12, Spacing: 2,
-		TextColor: color.RGBA{0, 0, 0, 0}, FillColor: color.RGBA{180, 180, 180, 0}}
-	c.TBody = &Style{Font: FontRoboto, Size: 12, Spacing: 2,
-		TextColor: color.RGBA{0, 0, 0, 0}, FillColor: color.RGBA{240, 240, 240, 0}}
+	c.THeader = &Style{
+		Font: FontRoboto, Size: 12, Spacing: 2,
+		TextColor: color.RGBA{0, 0, 0, 0}, FillColor: color.RGBA{180, 180, 180, 0},
+	}
+	c.TBody = &Style{
+		Font: FontRoboto, Size: 12, Spacing: 2,
+		TextColor: color.RGBA{0, 0, 0, 0}, FillColor: color.RGBA{240, 240, 240, 0},
+	}
 
 	c.CodeFont = FontRobotoMono
 	c.CodeBlockTheme = styles.Monokai

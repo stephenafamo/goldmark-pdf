@@ -39,7 +39,6 @@ func main() {
 }
 
 func generateConstants(fonts *webfonts.WebfontList) error {
-
 	// Generate our fonts.go file
 	f := jen.NewFilePathName("github.com/stephenafamo/goldmark-pdf", "pdf")
 
@@ -52,12 +51,12 @@ func generateConstants(fonts *webfonts.WebfontList) error {
 	gCodeFonts := f.Var().Id("CodeFontsGoogle").Op("=").Map(jen.String()).Qual("github.com/stephenafamo/goldmark-pdf", "Font")
 	f.Line()
 
-	var bodyFonts = make(jen.Dict)
-	var codeFonts = make(jen.Dict)
+	bodyFonts := make(jen.Dict)
+	codeFonts := make(jen.Dict)
 	// create variables for the fonts we use
 	for _, font := range fonts.Items {
 		var hasRegular, hasItalic, hasBold, hasBoldItalic bool
-		var regular, italic, bold, boldItalic = "regular", "italic", "700", "700italic"
+		regular, italic, bold, boldItalic := "regular", "italic", "700", "700italic"
 
 		for _, variant := range font.Variants {
 			switch variant {
