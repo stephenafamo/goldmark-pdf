@@ -95,7 +95,9 @@ func AddFonts(ctx context.Context, pdf PDF, fonts []Font, fontsCache fonts.Cache
 	// Create a cache
 	if fontsCache == nil {
 		c := ttlcache.NewCache()
-		c.SetTTL(time.Duration(20 * time.Second))
+		if err := c.SetTTL(time.Duration(20 * time.Second)); err != nil {
+			return err
+		}
 		c.SetCacheSizeLimit(64)
 		fontsCache = cache{c}
 	}
@@ -131,10 +133,18 @@ func AddFonts(ctx context.Context, pdf PDF, fonts []Font, fontsCache fonts.Cache
 			return err
 		}
 
-		pdf.AddFont(f.Family, FontStyleRegular, regular)
-		pdf.AddFont(f.Family, FontStyleItalic, italic)
-		pdf.AddFont(f.Family, FontStyleBold, bold)
-		pdf.AddFont(f.Family, FontStyleBoldItalic, boldItalic)
+		if err := pdf.AddFont(f.Family, FontStyleRegular, regular); err != nil {
+			return err
+		}
+		if err := pdf.AddFont(f.Family, FontStyleItalic, italic); err != nil {
+			return err
+		}
+		if err := pdf.AddFont(f.Family, FontStyleBold, bold); err != nil {
+			return err
+		}
+		if err := pdf.AddFont(f.Family, FontStyleBoldItalic, boldItalic); err != nil {
+			return err
+		}
 	}
 
 	return nil

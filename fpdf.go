@@ -2,7 +2,6 @@ package pdf
 
 import (
 	"context"
-	"fmt"
 	"io"
 
 	"github.com/go-swiss/fonts"
@@ -44,57 +43,6 @@ func NewFpdf(ctx context.Context, c FpdfConfig, fontsCache fonts.Cache) Fpdf {
 	fpdf.AddPage()
 
 	return fpdf
-}
-
-func defaultHeaderFunc(ctx context.Context, text string, logo io.Reader, logoFormat string, style Style) func(Fpdf, fonts.Cache) func() {
-	return func(fpdf Fpdf, fontsCache fonts.Cache) func() {
-		AddFonts(ctx, fpdf, []Font{style.Font}, fontsCache)
-
-		if logo != nil {
-			fpdf.RegisterImage("logo", logoFormat, logo)
-		}
-
-		LH := style.Size + style.Spacing
-		mleft, mtop, _, _ := fpdf.GetMargins()
-
-		footerFunc := func() {
-			SetStyle(fpdf, style)
-
-			fpdf.SetX(mleft + 5)
-
-			if logo != nil {
-				var logoWidth float64 = style.Size
-				fpdf.SetX(fpdf.GetX() + logoWidth)
-				fpdf.Fpdf.ImageOptions("logo", mleft, mtop, logoWidth, logoWidth, false, gofpdf.ImageOptions{ImageType: "", ReadDpi: false}, 0, "")
-			}
-
-			fpdf.CellFormat(0, 0, text, "", 0, "LT", false, 0, "")
-			fpdf.WriteText(LH, "\n")
-		}
-
-		return footerFunc
-	}
-}
-
-func defaultFooterFunc(ctx context.Context, text string, pageNo int, style Style) func(Fpdf, fonts.Cache) func() {
-	return func(fpdf Fpdf, fontsCache fonts.Cache) func() {
-		AddFonts(ctx, fpdf, []Font{style.Font}, fontsCache)
-		mleft, _, mright, mbottom := fpdf.GetMargins()
-		pageWidth, _ := fpdf.GetPageSize()
-
-		footerFunc := func() {
-			SetStyle(fpdf, style)
-			fpdf.SetY(-mbottom)
-			fpdf.Fpdf.Ln(-1)
-			fpdf.Fpdf.Ln(-1)
-			fpdf.SetX(mleft)
-			fpdf.CellFormat(0, 0, fmt.Sprintf("Page %d", pageNo+fpdf.Fpdf.PageNo()), "", 0, "LB", false, 0, "")
-			fpdf.SetX(mleft)
-			fpdf.CellFormat(pageWidth-mleft-mright, 0, text, "", 0, "RB", false, 0, "")
-		}
-
-		return footerFunc
-	}
 }
 
 type Fpdf struct {
