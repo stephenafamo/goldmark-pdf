@@ -80,6 +80,8 @@ github.com/go-gl/glfw/v3.3/glfw v0.0.0-20191125211704-12ad95a8df72/go.mod h1:tQ2
 github.com/go-gl/glfw/v3.3/glfw v0.0.0-20200222043503-6f7a984d4dc4/go.mod h1:tQ2UAYgL5IevRw8kRxooKSPJfGvJ9fJQFa0TUsXzTg8=
 github.com/go-swiss/fonts v0.0.0-20210417170609-5d357d615b8f h1:8xTPqp2aMscGdQ3yAzRyxk2REUSNR2x8ak4WzbjRfHo=
 github.com/go-swiss/fonts v0.0.0-20210417170609-5d357d615b8f/go.mod h1:kDru5pqfnVEL7+5tYsZOuWRGeWpDJHveRKxRJe5y0hE=
+github.com/go-swiss/fonts v0.0.0-20220802120607-8a942eccc739 h1:V+UdvXf4wfBnzC7ZLBqhb3ZjMo+WONF9F7sAIyUf518=
+github.com/go-swiss/fonts v0.0.0-20220802120607-8a942eccc739/go.mod h1:kDru5pqfnVEL7+5tYsZOuWRGeWpDJHveRKxRJe5y0hE=
 github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b/go.mod h1:SBH7ygxi8pfUlaOkMMuAQtPIUF8ecWP5IEl/CR7VP2Q=
 github.com/golang/groupcache v0.0.0-20190702054246-869f871628b6/go.mod h1:cIg4eruTrX1D+g88fzRXU5OdNfaM+9IcxsU14FzY7Hc=
 github.com/golang/groupcache v0.0.0-20191227052852-215e87163ea7/go.mod h1:cIg4eruTrX1D+g88fzRXU5OdNfaM+9IcxsU14FzY7Hc=
