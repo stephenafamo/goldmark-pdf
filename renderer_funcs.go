@@ -141,7 +141,7 @@ func (r *nodeRederFuncs) renderHeading(w *Writer, source []byte, node ast.Node, 
 func (r *nodeRederFuncs) renderTextBlock(w *Writer, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	if !entering {
 		w.LogDebug("Text Block", "")
-		if _, ok := node.NextSibling().(ast.Node); ok && node.FirstChild() != nil {
+		if node.FirstChild() != nil {
 			w.Pdf.BR(w.States.peek().textStyle.Size + w.States.peek().textStyle.Spacing)
 		}
 	}
