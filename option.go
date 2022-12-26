@@ -4,7 +4,7 @@ import (
 	"context"
 	"image/color"
 	"io"
-	"io/fs"
+	"net/http"
 
 	"github.com/alecthomas/chroma"
 	"github.com/go-swiss/fonts"
@@ -39,7 +39,7 @@ func WithContext(ctx context.Context) Option {
 }
 
 // Set the image filesystem
-func WithImageFS(images fs.FS) Option {
+func WithImageFS(images http.FileSystem) Option {
 	return OptionFunc(func(c *Config) {
 		c.ImageFS = images
 	})

@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"image/color"
 	"io"
-	"io/fs"
+	"net/http"
 	"strconv"
 	"strings"
 
@@ -19,7 +19,7 @@ import (
 // Holds the neccessary information to write to a PDF
 type Writer struct {
 	Pdf     PDF
-	ImageFS fs.FS
+	ImageFS http.FileSystem
 	Styles  Styles
 	States  states
 

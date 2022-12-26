@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"path/filepath"
 	"strings"
 
 	"github.com/alecthomas/chroma"
@@ -568,11 +567,11 @@ func (r *nodeRederFuncs) renderImage(w *Writer, source []byte, node ast.Node, en
 			mleft, _, mright, _ := w.Pdf.GetMargins()
 			maxw := width - (mleft * 2) - (mright * 2)
 
-			format := strings.ToUpper(strings.Trim(filepath.Ext(imgPath), "."))
-			w.Pdf.RegisterImage(imgPath, format, imgFile)
-			w.Pdf.UseImage(imgPath, (mleft * 2), w.Pdf.GetY(), maxw, 0)
+			mimeType := getFileMime(imgFile)
+			w.Pdf.RegisterImage(imgPath, getImageMime(mimeType), imgFile)
+			w.Pdf.UseImage(imgPath, mleft*2, w.Pdf.GetY(), maxw, 0)
 		} else {
-			log.Printf("IMAGE ERROR: %v", err)
+			log.Printf("IMAGE ERROR: %s, %v", imgPath, err)
 			w.LogDebug("Image (file error)", err.Error())
 		}
 	} else {

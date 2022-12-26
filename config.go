@@ -3,7 +3,7 @@ package pdf
 import (
 	"context"
 	"io"
-	"io/fs"
+	"net/http"
 	"os"
 
 	"github.com/go-swiss/fonts"
@@ -16,7 +16,7 @@ type Config struct {
 	PDF PDF
 
 	// A source for images
-	ImageFS fs.FS
+	ImageFS http.FileSystem
 
 	// All other options have sensible defaults
 	Styles Styles
@@ -33,7 +33,7 @@ type Config struct {
 func DefaultConfig() *Config {
 	c := &Config{}
 	c.Context = context.Background()
-	c.ImageFS = os.DirFS(".")
+	c.ImageFS = http.FS(os.DirFS("."))
 	c.Styles = DefaultStyles()
 
 	return c
