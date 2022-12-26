@@ -81,7 +81,7 @@ func (r *renderer) Render(w io.Writer, source []byte, n ast.Node) error {
 
 	writer := &Writer{
 		Pdf:         pdf,
-		ImageFS:     mergeFs(r.config.ImageFS, inlineFs{}, webFs{}),
+		ImageFS:     mergeFs(r.config.ImageFS, &inlineFs{}, &webFs{}),
 		Styles:      r.config.Styles,
 		DebugWriter: r.config.TraceWriter,
 		States:      states{stack: make([]*state, 0)},

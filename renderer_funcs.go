@@ -558,7 +558,7 @@ func (r *nodeRederFuncs) renderImage(w *Writer, source []byte, node ast.Node, en
 		w.LogDebug("Image (entering)", fmt.Sprintf("Destination[%v] Title[%v]", string(n.Destination), string(n.Title)))
 		// following changes suggested by @sirnewton01, issue #6
 		// does file exist?
-		imgPath := string(n.Destination)
+		imgPath := localPath(string(n.Destination))
 		imgFile, err := w.ImageFS.Open(imgPath)
 		if err == nil {
 			defer imgFile.Close()

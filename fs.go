@@ -34,7 +34,7 @@ func getFileMime(f http.File) string {
 		return ""
 	}
 
-	_, err = f.Seek(0, io.SeekStart)
+	f.Seek(0, io.SeekStart)
 	return mime.TypeByExtension(http.DetectContentType(sniff))
 }
 
@@ -49,8 +49,12 @@ type multiFs struct {
 	wrapped []http.FileSystem
 }
 
-func (f multiFs) Open(name string) (http.File, error) {
+func (f *multiFs) Open(name string) (http.File, error) {
 	for k := range f.wrapped {
+		if f.wrapped[k] == nil {
+			continue
+		}
+
 		if file, err := f.wrapped[k].Open(name); err == nil {
 			return file, nil
 		}
@@ -59,12 +63,12 @@ func (f multiFs) Open(name string) (http.File, error) {
 }
 
 func mergeFs(f ...http.FileSystem) http.FileSystem {
-	return multiFs{wrapped: f}
+	return &multiFs{wrapped: f}
 }
 
 type inlineFs struct{}
 
-func (f inlineFs) Open(name string) (http.File, error) {
+func (f *inlineFs) Open(name string) (http.File, error) {
 	if !strings.HasPrefix(name, "data:image/") {
 		return nil, fs.ErrNotExist
 	}
@@ -98,7 +102,7 @@ func (f inlineFs) Open(name string) (http.File, error) {
 	h.Write(data)
 	fName := hex.EncodeToString(h.Sum(nil)) + ext[0]
 
-	return inlineFile{
+	return &inlineFile{
 		data: bytes.NewReader(data),
 		mime: mimeType,
 		size: int64(len(data)),
@@ -113,31 +117,30 @@ type inlineFile struct {
 	name string
 }
 
-func (f inlineFile) MimeType() string {
+func (f *inlineFile) MimeType() string {
 	return f.mime
 }
 
-func (f inlineFile) Stat() (fs.FileInfo, error) {
-	i := inlineInfo{
+func (f *inlineFile) Stat() (fs.FileInfo, error) {
+	return &inlineInfo{
 		s: f.size,
 		n: f.name,
-	}
-	return i, nil
+	}, nil
 }
 
-func (f inlineFile) Read(p []byte) (int, error) {
+func (f *inlineFile) Read(p []byte) (int, error) {
 	return f.data.Read(p)
 }
 
-func (f inlineFile) Readdir(int) ([]fs.FileInfo, error) {
+func (f *inlineFile) Readdir(int) ([]fs.FileInfo, error) {
 	return nil, fs.ErrInvalid
 }
 
-func (f inlineFile) Close() error {
+func (f *inlineFile) Close() error {
 	return nil
 }
 
-func (f inlineFile) Seek(offset int64, whence int) (absoluteOffset int64, err error) {
+func (f *inlineFile) Seek(offset int64, whence int) (int64, error) {
 	return f.data.Seek(offset, whence)
 }
 
@@ -146,35 +149,33 @@ type inlineInfo struct {
 	n string
 }
 
-func (i inlineInfo) Name() string {
+func (i *inlineInfo) Name() string {
 	return i.n
 }
 
-func (i inlineInfo) Size() int64 {
+func (i *inlineInfo) Size() int64 {
 	return i.s
 }
 
-func (i inlineInfo) Mode() fs.FileMode {
+func (i *inlineInfo) Mode() fs.FileMode {
 	return fs.ModeIrregular
 }
 
-func (i inlineInfo) ModTime() time.Time {
+func (i *inlineInfo) ModTime() time.Time {
 	return time.Time{}
 }
 
-func (i inlineInfo) IsDir() bool {
+func (i *inlineInfo) IsDir() bool {
 	return false
 }
 
-func (i inlineInfo) Sys() interface{} {
+func (i *inlineInfo) Sys() interface{} {
 	return nil
 }
 
-// ----------------------
-
 type webFs struct{}
 
-func (f webFs) Open(name string) (http.File, error) {
+func (f *webFs) Open(name string) (http.File, error) {
 	if !strings.HasPrefix(name, "http://") && !strings.HasPrefix(name, "https://") {
 		return nil, fs.ErrNotExist
 	}
@@ -188,34 +189,25 @@ func (f webFs) Open(name string) (http.File, error) {
 		return nil, err
 	}
 
-	return &webFile{r: res}, nil
-}
+	defer res.Body.Close()
 
-type webFile struct {
-	r         *http.Response
-	data      *bytes.Reader // @todo configurable so that we can use tmp directory instead of just memory
-	closed    bool
-	closedErr error
-}
+	data, err := io.ReadAll(io.LimitReader(res.Body, 1024*1024*5))
+	if err != nil {
+		return nil, err
+	}
 
-func (f webFile) MimeType() string {
-	return f.r.Header.Get("Content-Type")
-}
+	mod, _ := time.Parse(time.RFC1123, res.Header.Get("Last-Modified"))
 
-func (f webFile) Stat() (fs.FileInfo, error) {
-	// if this errors, we get empty time struct which is desired
-	mod, _ := time.Parse(time.RFC1123, f.r.Header.Get("Last-Modified"))
-
-	fileName := strings.TrimPrefix(f.r.Request.URL.Path, "/")
+	fileName := strings.TrimPrefix(res.Request.URL.Path, "/")
 	if fileName == "" {
-		_, params, err := mime.ParseMediaType(f.r.Header.Get("Content-Disposition"))
+		_, params, err := mime.ParseMediaType(res.Header.Get("Content-Disposition"))
 		if err == nil {
 			fileName = params["filename"]
 		}
 	}
 
 	if filepath.Ext(fileName) == "" {
-		mt, _, _ := mime.ParseMediaType(f.r.Header.Get("Content-Type"))
+		mt, _, _ := mime.ParseMediaType(res.Header.Get("Content-Type"))
 		if spl := strings.Split(mt, "/"); len(spl) > 0 {
 			if fileName == "" {
 				fileName = spl[0]
@@ -224,44 +216,36 @@ func (f webFile) Stat() (fs.FileInfo, error) {
 		}
 	}
 
-	fileName = filepath.Base(fileName)
-
-	i := webInfo{
-		s: f.r.ContentLength,
-		t: mod,
-		n: fileName,
-	}
-
-	return i, nil
+	return &webFile{
+		data: bytes.NewReader(data),
+		mime: res.Header.Get("Content-Type"),
+		name: filepath.Base(fileName),
+		size: res.ContentLength,
+		mod:  mod,
+	}, nil
 }
 
-func (f *webFile) setData() error {
-	if f.data != nil {
-		return nil
-	}
+type webFile struct {
+	data *bytes.Reader
+	mime string
+	name string
+	size int64
+	mod  time.Time
+}
 
-	data, err := io.ReadAll(f.r.Body)
-	f.closedErr = f.r.Body.Close()
-	f.closed = true
-	if err != nil {
-		f.closedErr = err // this will have priority
-		return err
-	}
+func (f *webFile) MimeType() string {
+	return f.mime
+}
 
-	f.data = bytes.NewReader(data)
-	return nil
+func (f *webFile) Stat() (fs.FileInfo, error) {
+	return &webInfo{
+		s: f.size,
+		t: f.mod,
+		n: f.name,
+	}, nil
 }
 
 func (f *webFile) Read(p []byte) (int, error) {
-	// if there is no data and we're closed, it means there was previously some kind of error
-	if f.data == nil && f.closed {
-		return 0, f.closedErr
-	}
-
-	if err := f.setData(); err != nil {
-		return 0, err
-	}
-
 	return f.data.Read(p)
 }
 
@@ -270,23 +254,10 @@ func (f *webFile) Readdir(int) ([]fs.FileInfo, error) {
 }
 
 func (f *webFile) Close() error {
-	if f.closed == false {
-		f.closedErr = f.r.Body.Close()
-		f.closed = true
-	}
-	return f.closedErr
+	return nil
 }
 
-func (f *webFile) Seek(offset int64, whence int) (absoluteOffset int64, err error) {
-	// if there is no data and we're closed, it means there was previously some kind of error
-	if f.data == nil && f.closed {
-		return 0, f.closedErr
-	}
-
-	if err := f.setData(); err != nil {
-		return 0, err
-	}
-
+func (f *webFile) Seek(offset int64, whence int) (int64, error) {
 	return f.data.Seek(offset, whence)
 }
 
@@ -296,26 +267,37 @@ type webInfo struct {
 	n string
 }
 
-func (i webInfo) Name() string {
+func (i *webInfo) Name() string {
 	return i.n
 }
 
-func (i webInfo) Size() int64 {
+func (i *webInfo) Size() int64 {
 	return i.s
 }
 
-func (i webInfo) Mode() fs.FileMode {
+func (i *webInfo) Mode() fs.FileMode {
 	return fs.ModeIrregular
 }
 
-func (i webInfo) ModTime() time.Time {
+func (i *webInfo) ModTime() time.Time {
 	return i.t
 }
 
-func (i webInfo) IsDir() bool {
+func (i *webInfo) IsDir() bool {
 	return false
 }
 
-func (i webInfo) Sys() interface{} {
-	return nil // we can pass the response if needed
+func (i *webInfo) Sys() interface{} {
+	return nil
+}
+
+// fs.Dir() will not find paths of local files that start with "./",
+// even though it is a perfectly valid path. paths that start with "../"
+// would not work anyway, but we will not process them because there might be
+// FS that can, so we would practically break it.
+func localPath(path string) string {
+	if strings.HasPrefix(path, "../") {
+		return path
+	}
+	return strings.TrimLeft(path, "./")
 }
