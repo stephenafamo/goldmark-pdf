@@ -48,6 +48,10 @@ func (w *Writer) Text(s Style, t string) {
 
 // Write a link
 func (w *Writer) WriteLink(s Style, display, url string) {
+	if url[0] == '#' {
+		w.Pdf.WriteInternalLink(s.Size+s.Spacing, display, url[1:])
+		return
+	}
 	w.Pdf.WriteExternalLink(s.Size+s.Spacing, display, url)
 }
 

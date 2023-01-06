@@ -109,7 +109,6 @@ func (f Impl) CellFormat(w float64, h float64, txtStr string, borderStr string, 
 			border = border | gopdf.Bottom
 		}
 	}
-	border = 0
 
 	float := gopdf.Right
 	if ln == 1 {
@@ -128,6 +127,25 @@ func (f Impl) CellFormat(w float64, h float64, txtStr string, borderStr string, 
 	if err != nil {
 		panic(err)
 	}
+}
+
+func (f Impl) AddInternalLink(anchor string) {
+	f.GoPdf.SetAnchor(anchor)
+}
+
+func (f Impl) WriteInternalLink(h float64, text string, anchor string) {
+	f.maybeAddPage(h)
+	x := f.GoPdf.GetX()
+	y := f.GoPdf.GetY()
+	w, _ := f.GoPdf.MeasureTextWidth(text)
+	err := f.GoPdf.CellWithOption(&gopdf.Rect{W: w, H: h}, text, gopdf.CellOption{
+		Align: gopdf.Left,
+		Float: gopdf.Right,
+	})
+	if err != nil {
+		panic(err)
+	}
+	f.GoPdf.AddExternalLink(anchor, x, y, w, h)
 }
 
 func (f Impl) WriteExternalLink(h float64, text string, destination string) {

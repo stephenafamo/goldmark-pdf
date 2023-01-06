@@ -71,6 +71,9 @@ func (r *renderer) Render(w io.Writer, source []byte, n ast.Node) error {
 		pdf = NewFpdf(r.config.Context, FpdfConfig{}, nil)
 	}
 
+	// create an empty interna link to the top of the page
+	pdf.AddInternalLink("")
+
 	err := addStyleFonts(r.config.Context, pdf, r.config.Styles, r.config.FontsCache)
 	if err != nil {
 		return fmt.Errorf("could not load fonts: %w", err)

@@ -25,8 +25,11 @@ type FpdfConfig struct {
 	FooterFunc func(impl Fpdf, fontsCache fonts.Cache) func()
 }
 
-func NewFpdf(ctx context.Context, c FpdfConfig, fontsCache fonts.Cache) Fpdf {
-	fpdf := Fpdf{Fpdf: gofpdf.New(c.Orientation, "pt", c.PaperSize, "")}
+func NewFpdf(ctx context.Context, c FpdfConfig, fontsCache fonts.Cache) *Fpdf {
+	fpdf := Fpdf{
+		Fpdf:    gofpdf.New(c.Orientation, "pt", c.PaperSize, ""),
+		anchors: make(map[string]int),
+	}
 
 	fpdf.Fpdf.SetTitle(c.Title, true)
 	fpdf.Fpdf.SetSubject(c.Subject, true)
@@ -42,11 +45,20 @@ func NewFpdf(ctx context.Context, c FpdfConfig, fontsCache fonts.Cache) Fpdf {
 
 	fpdf.AddPage()
 
-	return fpdf
+	return &fpdf
+}
+
+type internalLink struct {
+	page          int
+	x, y          float64
+	width, height float64
+	anchor        string
 }
 
 type Fpdf struct {
-	Fpdf *gofpdf.Fpdf
+	Fpdf        *gofpdf.Fpdf
+	anchorLinks []internalLink
+	anchors     map[string]int
 }
 
 // Add a new page
@@ -102,6 +114,24 @@ func (f Fpdf) WriteText(height float64, text string) {
 func (f Fpdf) CellFormat(w float64, h float64, txtStr string, borderStr string, ln int, alignStr string, fill bool, link int, linkStr string) {
 	f.Fpdf.SetCellMargin(0)
 	f.Fpdf.CellFormat(w, h, txtStr, borderStr, ln, alignStr, fill, link, linkStr)
+}
+
+func (f *Fpdf) AddInternalLink(anchor string) {
+	linkID := f.Fpdf.AddLink()
+	f.Fpdf.SetLink(linkID, f.GetY(), -1)
+	f.anchors[anchor] = linkID
+}
+
+func (f *Fpdf) WriteInternalLink(lineHeight float64, text string, anchor string) {
+	f.anchorLinks = append(f.anchorLinks, internalLink{
+		page:   f.Fpdf.PageNo(),
+		width:  f.MeasureTextWidth(text),
+		height: lineHeight,
+		x:      f.GetX(),
+		y:      f.GetY(),
+		anchor: anchor,
+	})
+	f.Fpdf.WriteLinkString(lineHeight, text, "#"+anchor)
 }
 
 func (f Fpdf) WriteExternalLink(lineHeight float64, text string, destination string) {
@@ -162,6 +192,18 @@ func (f Fpdf) Line(x1 float64, y1 float64, x2 float64, y2 float64) {
 }
 
 func (f Fpdf) Write(w io.Writer) error {
+	// write the internal links
+	for _, link := range f.anchorLinks {
+		id, ok := f.anchors[link.anchor]
+		if !ok {
+			continue
+		}
+
+		f.Fpdf.SetPage(link.page)
+		f.Fpdf.Link(link.x, link.y, link.width, link.height, id)
+	}
+
+	f.Fpdf.SetPage(f.Fpdf.PageCount())
 	return f.Fpdf.Output(w)
 }
 
