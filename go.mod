@@ -2,6 +2,8 @@ module github.com/stephenafamo/goldmark-pdf
 
 go 1.18
 
+retract v0.3.0 // Wrong implementation of default cache
+
 require (
 	github.com/alecthomas/chroma v0.8.2
 	github.com/dave/jennifer v1.4.1
