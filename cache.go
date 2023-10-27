@@ -1,23 +1,18 @@
 package pdf
 
 import (
-	"github.com/ReneKroon/ttlcache/v2"
+	"github.com/jellydator/ttlcache/v3"
 )
 
 type cache struct {
-	c *ttlcache.Cache
+	c *ttlcache.Cache[string, []byte]
 }
 
 func (c cache) Get(key string) ([]byte, bool) {
-	fontInterface, err := c.c.Get(key)
-	if err != nil {
-		return nil, false
-	}
-
-	fontBytes, ok := fontInterface.([]byte)
-	return fontBytes, ok
+	val := c.c.Get(key)
+	return val.Value(), val == nil
 }
 
 func (c cache) Set(key string, val []byte) {
-	c.c.Set(key, val)
+	c.c.Set(key, val, ttlcache.DefaultTTL)
 }

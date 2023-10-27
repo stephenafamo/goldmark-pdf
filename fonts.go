@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/ReneKroon/ttlcache/v2"
 	"github.com/go-swiss/fonts"
 	"github.com/go-swiss/fonts/google"
+	"github.com/jellydator/ttlcache/v3"
 )
 
 type fontType string
@@ -94,11 +94,10 @@ func addStyleFonts(ctx context.Context, pdf PDF, styles Styles, fontsCache fonts
 func AddFonts(ctx context.Context, pdf PDF, fonts []Font, fontsCache fonts.Cache) error {
 	// Create a cache
 	if fontsCache == nil {
-		c := ttlcache.NewCache()
-		if err := c.SetTTL(time.Duration(20 * time.Second)); err != nil {
-			return err
-		}
-		c.SetCacheSizeLimit(64)
+		c := ttlcache.New[string, []byte](
+			ttlcache.WithTTL[string, []byte](time.Duration(20*time.Second)),
+			ttlcache.WithCapacity[string, []byte](64),
+		)
 		fontsCache = cache{c}
 	}
 
