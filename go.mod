@@ -5,7 +5,7 @@ go 1.18
 retract v0.3.0 // Wrong implementation of default cache
 
 require (
-	github.com/alecthomas/chroma v0.8.2
+	github.com/alecthomas/chroma/v2 v2.10.0
 	github.com/dave/jennifer v1.4.1
 	github.com/go-swiss/fonts v0.0.0-20221219152310-0b267088f53d
 	github.com/jellydator/ttlcache/v3 v3.1.0
@@ -17,8 +17,7 @@ require (
 
 require (
 	cloud.google.com/go v0.81.0 // indirect
-	github.com/danwakefield/fnmatch v0.0.0-20160403171240-cbb64ac3d964 // indirect
-	github.com/dlclark/regexp2 v1.2.0 // indirect
+	github.com/dlclark/regexp2 v1.10.0 // indirect
 	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e // indirect
 	github.com/golang/protobuf v1.5.1 // indirect
 	github.com/googleapis/gax-go/v2 v2.0.5 // indirect

@@ -3,8 +3,8 @@ package pdf
 import (
 	"image/color"
 
-	"github.com/alecthomas/chroma"
-	"github.com/alecthomas/chroma/styles"
+	"github.com/alecthomas/chroma/v2"
+	"github.com/alecthomas/chroma/v2/styles"
 )
 
 // Style is the struct to capture the styling features for text
@@ -100,7 +100,7 @@ func DefaultStyles() Styles {
 	}
 
 	c.CodeFont = FontRobotoMono
-	c.CodeBlockTheme = styles.Monokai
+	c.CodeBlockTheme = styles.Get("monokai")
 
 	return c
 }

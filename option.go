@@ -6,7 +6,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/alecthomas/chroma"
+	"github.com/alecthomas/chroma/v2"
 	"github.com/go-swiss/fonts"
 	"github.com/yuin/goldmark/util"
 )
