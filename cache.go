@@ -19,7 +19,11 @@ type cache struct {
 
 func (c cache) Get(key string) ([]byte, bool) {
 	val := c.c.Get(key)
-	return val.Value(), val != nil
+	if val != nil {
+		return val.Value(), true
+	} else {
+		return nil, false
+	}
 }
 
 func (c cache) Set(key string, val []byte) {
