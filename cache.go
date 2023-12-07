@@ -21,9 +21,9 @@ func (c cache) Get(key string) ([]byte, bool) {
 	val := c.c.Get(key)
 	if val != nil {
 		return val.Value(), true
-	} else {
-		return nil, false
 	}
+
+	return nil, false
 }
 
 func (c cache) Set(key string, val []byte) {
