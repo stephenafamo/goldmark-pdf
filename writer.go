@@ -71,23 +71,28 @@ func (w *Writer) WriteText(stringContents string) {
 	} else if w.States.peek().containerType == ast.KindHeading {
 		escapeWriter{}.write(bufw, []byte(stringContents))
 	} else if w.States.peek().containerType == east.KindTableCell {
-		if w.States.peek().isHeader {
-			SetStyle(w.Pdf, currentStyle)
-			// get the string width of header value
-			hw := w.Pdf.MeasureTextWidth(stringContents) + (2 * w.Pdf.MeasureTextWidth("m"))
-			// now append it
-			cellwidths = append(cellwidths, hw)
-			// now write it...
-			h := currentStyle.Size + currentStyle.Spacing
-			w.LogDebug("... table header cell", fmt.Sprintf("Width=%v, height=%v", hw, h))
+		hw := cellwidths[curdatacell]
+		h := currentStyle.Size + currentStyle.Spacing
+		SetStyle(w.Pdf, currentStyle)
 
+		if w.States.peek().isHeader {
+			// we assume single line based on column width calculation implementation
+			w.LogDebug("... table header cell", fmt.Sprintf("Width=%v, height=%v", hw, h))
 			w.Pdf.CellFormat(hw, h, stringContents, "1", 0, "L", true, 0, "")
 		} else {
-			SetStyle(w.Pdf, currentStyle)
-			hw := cellwidths[curdatacell]
-			h := currentStyle.Size + currentStyle.Spacing
 			w.LogDebug("... table body cell", fmt.Sprintf("Width=%v, height=%v", hw, h))
-			w.Pdf.CellFormat(hw, h, stringContents, "LR", 0, "", fill, 0, "")
+
+			// split into lines base on cell width
+			lines := w.Pdf.SplitText(stringContents, hw)
+			cellStartX := w.Pdf.GetX()
+			for i, line := range lines {
+				// new line before second or later lines
+				if i > 0 {
+					w.Pdf.BR(h)
+					w.Pdf.SetX(cellStartX)
+				}
+				w.Pdf.CellFormat(hw, h, line, "LR", 0, "", fill, 0, "")
+			}
 		}
 	} else {
 		escapeWriter{}.write(bufw, []byte(stringContents))
