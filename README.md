@@ -1,5 +1,10 @@
 # goldmark-pdf
 
+[![https://pkg.go.dev/github.com/stephenafamo/goldmark-pdf](https://pkg.go.dev/badge/github.com/stephenafamo/goldmark-pdf.svg)](https://pkg.go.dev/github.com/stephenafamo/goldmark-pdf)
+[![Test](https://github.com/stephenafamo/goldmark-pdf/actions/workflows/test.yml/badge.svg)](https://github.com/stephenafamo/goldmark-pdf/actions/workflows/test.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/stephenafamo/goldmark-pdf)](https://goreportcard.com/report/github.com/stephenafamo/goldmark-pdf)
+
+
 goldmark-pdf is a renderer for [goldmark](http://github.com/yuin/goldmark) that allows rendering to PDF.
 
 ![goldmark-pdf screenshot](https://res.cloudinary.com/stephenafamo/image/upload/v1618945448/goldmark-pdf%20screenshot.png)

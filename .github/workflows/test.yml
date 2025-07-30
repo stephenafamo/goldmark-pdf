@@ -1,0 +1,38 @@
+name: Test
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go-version: ['oldstable', 'stable']
+    
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+    - name: Install go
+      uses: actions/setup-go@v5
+      with:
+        go-version: ${{ matrix.go-version }}
+    - name: Run tests
+      run: go test -v ./...
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+    - name: Install go
+      uses: actions/setup-go@v5
+      with:
+        go-version: 'stable'
+    - name: golangci-lint
+      uses: golangci/golangci-lint-action@v8
