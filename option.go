@@ -2,6 +2,7 @@ package pdf
 
 import (
 	"context"
+	goldrender "github.com/yuin/goldmark/renderer"
 	"image/color"
 	"io"
 	"net/http"
@@ -9,6 +10,13 @@ import (
 	"github.com/alecthomas/chroma/v2"
 	"github.com/go-swiss/fonts"
 	"github.com/yuin/goldmark/util"
+)
+
+const (
+	// Same internal opt name as html.WithUnsafe() from goldmark
+	// https://github.com/yuin/goldmark/blob/master/renderer/html/html.go#L221
+	optUnsafe     goldrender.OptionName = "Unsafe"
+	optEscapeHTML goldrender.OptionName = "EscapeHTML"
 )
 
 // An Option interface is a functional option type for the Renderer.
@@ -63,6 +71,13 @@ func WithLinkColor(val color.Color) Option {
 func WithTraceWriter(val io.Writer) Option {
 	return OptionFunc(func(c *Config) {
 		c.TraceWriter = val
+	})
+}
+
+// If the content should escape HTML looking characters
+func WithEscapeHTML(val bool) Option {
+	return OptionFunc(func(c *Config) {
+		c.Options[optEscapeHTML] = val
 	})
 }
 

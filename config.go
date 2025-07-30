@@ -2,6 +2,7 @@ package pdf
 
 import (
 	"context"
+	goldrender "github.com/yuin/goldmark/renderer"
 	"io"
 	"net/http"
 	"os"
@@ -11,6 +12,7 @@ import (
 )
 
 type Config struct {
+	goldrender.Config
 	Context context.Context
 
 	PDF PDF
@@ -35,6 +37,7 @@ func DefaultConfig() *Config {
 	c.Context = context.Background()
 	c.ImageFS = http.FS(os.DirFS("."))
 	c.Styles = DefaultStyles()
+	c.Options = make(map[goldrender.OptionName]interface{})
 
 	return c
 }
