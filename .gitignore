@@ -1,2 +1,16 @@
+# Mac OS X files
 .DS_Store
-test
+
+# Environment
+*.env
+
+# IDEs
+.idea/
+.task/
+
+# Test binary, built with `go test -c`
+*test
+
+# Output of the go coverage tool
+coverage.txt
+

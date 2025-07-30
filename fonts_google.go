@@ -3,240 +3,343 @@
 package pdf
 
 var TextFontsGoogle = map[string]Font{
-	FontAlbertSans.Family:             FontAlbertSans,
-	FontAlegreya.Family:               FontAlegreya,
-	FontAlegreyaSC.Family:             FontAlegreyaSC,
-	FontAlegreyaSans.Family:           FontAlegreyaSans,
-	FontAlegreyaSansSC.Family:         FontAlegreyaSansSC,
-	FontAleo.Family:                   FontAleo,
-	FontAlmendra.Family:               FontAlmendra,
-	FontAlumniSans.Family:             FontAlumniSans,
-	FontAmaranth.Family:               FontAmaranth,
-	FontAmiri.Family:                  FontAmiri,
-	FontAndadaPro.Family:              FontAndadaPro,
-	FontAndika.Family:                 FontAndika,
-	FontAnonymousPro.Family:           FontAnonymousPro,
-	FontAnybody.Family:                FontAnybody,
-	FontArchivo.Family:                FontArchivo,
-	FontArchivoNarrow.Family:          FontArchivoNarrow,
-	FontArimo.Family:                  FontArimo,
-	FontArsenal.Family:                FontArsenal,
-	FontArvo.Family:                   FontArvo,
-	FontAsap.Family:                   FontAsap,
-	FontAsapCondensed.Family:          FontAsapCondensed,
-	FontAtkinsonHyperlegible.Family:   FontAtkinsonHyperlegible,
-	FontAveriaLibre.Family:            FontAveriaLibre,
-	FontAveriaSansLibre.Family:        FontAveriaSansLibre,
-	FontAveriaSerifLibre.Family:       FontAveriaSerifLibre,
-	FontAzeretMono.Family:             FontAzeretMono,
-	FontB612.Family:                   FontB612,
-	FontB612Mono.Family:               FontB612Mono,
-	FontBaiJamjuree.Family:            FontBaiJamjuree,
-	FontBalsamiqSans.Family:           FontBalsamiqSans,
-	FontBarlow.Family:                 FontBarlow,
-	FontBarlowCondensed.Family:        FontBarlowCondensed,
-	FontBarlowSemiCondensed.Family:    FontBarlowSemiCondensed,
-	FontBeVietnamPro.Family:           FontBeVietnamPro,
-	FontBellota.Family:                FontBellota,
-	FontBellotaText.Family:            FontBellotaText,
-	FontBesley.Family:                 FontBesley,
-	FontBitter.Family:                 FontBitter,
-	FontBodoniModa.Family:             FontBodoniModa,
-	FontBrygada1918.Family:            FontBrygada1918,
-	FontCabin.Family:                  FontCabin,
-	FontCaladea.Family:                FontCaladea,
-	FontCambay.Family:                 FontCambay,
-	FontCantarell.Family:              FontCantarell,
-	FontCaudex.Family:                 FontCaudex,
-	FontChakraPetch.Family:            FontChakraPetch,
-	FontCharisSIL.Family:              FontCharisSIL,
-	FontChivo.Family:                  FontChivo,
-	FontChivoMono.Family:              FontChivoMono,
-	FontComicNeue.Family:              FontComicNeue,
-	FontCormorant.Family:              FontCormorant,
-	FontCormorantGaramond.Family:      FontCormorantGaramond,
-	FontCormorantInfant.Family:        FontCormorantInfant,
-	FontCourierPrime.Family:           FontCourierPrime,
-	FontCousine.Family:                FontCousine,
-	FontCrimsonPro.Family:             FontCrimsonPro,
-	FontCrimsonText.Family:            FontCrimsonText,
-	FontCuprum.Family:                 FontCuprum,
-	FontDMSans.Family:                 FontDMSans,
-	FontEBGaramond.Family:             FontEBGaramond,
-	FontEconomica.Family:              FontEconomica,
-	FontEpilogue.Family:               FontEpilogue,
-	FontExo.Family:                    FontExo,
-	FontExo2.Family:                   FontExo2,
-	FontExpletusSans.Family:           FontExpletusSans,
-	FontFahkwang.Family:               FontFahkwang,
-	FontFamiljenGrotesk.Family:        FontFamiljenGrotesk,
-	FontFaustina.Family:               FontFaustina,
-	FontFigtree.Family:                FontFigtree,
-	FontFinlandica.Family:             FontFinlandica,
-	FontFiraSans.Family:               FontFiraSans,
-	FontFiraSansCondensed.Family:      FontFiraSansCondensed,
-	FontFiraSansExtraCondensed.Family: FontFiraSansExtraCondensed,
-	FontFraunces.Family:               FontFraunces,
-	FontGFSNeohellenic.Family:         FontGFSNeohellenic,
-	FontGantari.Family:                FontGantari,
-	FontGelasio.Family:                FontGelasio,
-	FontGenos.Family:                  FontGenos,
-	FontGentiumBookBasic.Family:       FontGentiumBookBasic,
-	FontGentiumBookPlus.Family:        FontGentiumBookPlus,
-	FontGentiumPlus.Family:            FontGentiumPlus,
-	FontGeorama.Family:                FontGeorama,
-	FontGlory.Family:                  FontGlory,
-	FontGrandstander.Family:           FontGrandstander,
-	FontGrenze.Family:                 FontGrenze,
-	FontHankenGrotesk.Family:          FontHankenGrotesk,
-	FontIBMPlexMono.Family:            FontIBMPlexMono,
-	FontIBMPlexSans.Family:            FontIBMPlexSans,
-	FontIBMPlexSansCondensed.Family:   FontIBMPlexSansCondensed,
-	FontIBMPlexSerif.Family:           FontIBMPlexSerif,
-	FontIbarraRealNova.Family:         FontIbarraRealNova,
-	FontInriaSans.Family:              FontInriaSans,
-	FontInriaSerif.Family:             FontInriaSerif,
-	FontInterTight.Family:             FontInterTight,
-	FontIstokWeb.Family:               FontIstokWeb,
-	FontJetBrainsMono.Family:          FontJetBrainsMono,
-	FontJosefinSans.Family:            FontJosefinSans,
-	FontJosefinSlab.Family:            FontJosefinSlab,
-	FontJost.Family:                   FontJost,
-	FontK2D.Family:                    FontK2D,
-	FontKanit.Family:                  FontKanit,
-	FontKantumruyPro.Family:           FontKantumruyPro,
-	FontKarla.Family:                  FontKarla,
-	FontKoHo.Family:                   FontKoHo,
-	FontKodchasan.Family:              FontKodchasan,
-	FontKrub.Family:                   FontKrub,
-	FontKufam.Family:                  FontKufam,
-	FontKulimPark.Family:              FontKulimPark,
-	FontLato.Family:                   FontLato,
-	FontLibreBodoni.Family:            FontLibreBodoni,
-	FontLibreFranklin.Family:          FontLibreFranklin,
-	FontLiterata.Family:               FontLiterata,
-	FontLivvic.Family:                 FontLivvic,
-	FontLobsterTwo.Family:             FontLobsterTwo,
-	FontLora.Family:                   FontLora,
-	FontMali.Family:                   FontMali,
-	FontManuale.Family:                FontManuale,
-	FontMarvel.Family:                 FontMarvel,
-	FontMerriweather.Family:           FontMerriweather,
-	FontMerriweatherSans.Family:       FontMerriweatherSans,
-	FontMohave.Family:                 FontMohave,
-	FontMontserrat.Family:             FontMontserrat,
-	FontMontserratAlternates.Family:   FontMontserratAlternates,
-	FontMulish.Family:                 FontMulish,
-	FontMuseoModerno.Family:           FontMuseoModerno,
-	FontNewsreader.Family:             FontNewsreader,
-	FontNiramit.Family:                FontNiramit,
-	FontNobile.Family:                 FontNobile,
-	FontNoticiaText.Family:            FontNoticiaText,
-	FontNotoSans.Family:               FontNotoSans,
-	FontNotoSansDisplay.Family:        FontNotoSansDisplay,
-	FontNotoSerif.Family:              FontNotoSerif,
-	FontNotoSerifDisplay.Family:       FontNotoSerifDisplay,
-	FontNotoSerifTamil.Family:         FontNotoSerifTamil,
-	FontNunito.Family:                 FontNunito,
-	FontNunitoSans.Family:             FontNunitoSans,
-	FontOpenSans.Family:               FontOpenSans,
-	FontOverlock.Family:               FontOverlock,
-	FontOverpass.Family:               FontOverpass,
-	FontPTSans.Family:                 FontPTSans,
-	FontPTSerif.Family:                FontPTSerif,
-	FontPetrona.Family:                FontPetrona,
-	FontPhilosopher.Family:            FontPhilosopher,
-	FontPiazzolla.Family:              FontPiazzolla,
-	FontPlayfairDisplay.Family:        FontPlayfairDisplay,
-	FontPlayfairDisplaySC.Family:      FontPlayfairDisplaySC,
-	FontPlusJakartaSans.Family:        FontPlusJakartaSans,
-	FontPoppins.Family:                FontPoppins,
-	FontPrompt.Family:                 FontPrompt,
-	FontProzaLibre.Family:             FontProzaLibre,
-	FontPublicSans.Family:             FontPublicSans,
-	FontPuritan.Family:                FontPuritan,
-	FontQuantico.Family:               FontQuantico,
-	FontQuattrocentoSans.Family:       FontQuattrocentoSans,
-	FontRadioCanada.Family:            FontRadioCanada,
-	FontRaleway.Family:                FontRaleway,
-	FontRambla.Family:                 FontRambla,
-	FontRasa.Family:                   FontRasa,
-	FontRedHatDisplay.Family:          FontRedHatDisplay,
-	FontRedHatMono.Family:             FontRedHatMono,
-	FontRedHatText.Family:             FontRedHatText,
-	FontRoboto.Family:                 FontRoboto,
-	FontRobotoCondensed.Family:        FontRobotoCondensed,
-	FontRobotoMono.Family:             FontRobotoMono,
-	FontRobotoSerif.Family:            FontRobotoSerif,
-	FontRosario.Family:                FontRosario,
-	FontRubik.Family:                  FontRubik,
-	FontSTIXTwoText.Family:            FontSTIXTwoText,
-	FontSaira.Family:                  FontSaira,
-	FontSansita.Family:                FontSansita,
-	FontSarabun.Family:                FontSarabun,
-	FontScada.Family:                  FontScada,
-	FontShare.Family:                  FontShare,
-	FontSourceCodePro.Family:          FontSourceCodePro,
-	FontSourceSans3.Family:            FontSourceSans3,
-	FontSourceSansPro.Family:          FontSourceSansPro,
-	FontSourceSerif4.Family:           FontSourceSerif4,
-	FontSourceSerifPro.Family:         FontSourceSerifPro,
-	FontSpaceMono.Family:              FontSpaceMono,
-	FontSpectral.Family:               FontSpectral,
-	FontSpectralSC.Family:             FontSpectralSC,
-	FontSplineSansMono.Family:         FontSplineSansMono,
-	FontTaviraj.Family:                FontTaviraj,
-	FontTexturina.Family:              FontTexturina,
-	FontThasadith.Family:              FontThasadith,
-	FontTinos.Family:                  FontTinos,
-	FontTitilliumWeb.Family:           FontTitilliumWeb,
-	FontTomorrow.Family:               FontTomorrow,
-	FontTourney.Family:                FontTourney,
-	FontTrirong.Family:                FontTrirong,
-	FontUbuntu.Family:                 FontUbuntu,
-	FontUbuntuMono.Family:             FontUbuntuMono,
-	FontUnna.Family:                   FontUnna,
-	FontUrbanist.Family:               FontUrbanist,
-	FontVolkhov.Family:                FontVolkhov,
-	FontVollkorn.Family:               FontVollkorn,
-	FontWorkSans.Family:               FontWorkSans,
-	FontYrsa.Family:                   FontYrsa,
-	FontZillaSlab.Family:              FontZillaSlab,
+	FontAdventPro.Family:                FontAdventPro,
+	FontAfacad.Family:                   FontAfacad,
+	FontAlbertSans.Family:               FontAlbertSans,
+	FontAlegreya.Family:                 FontAlegreya,
+	FontAlegreyaSC.Family:               FontAlegreyaSC,
+	FontAlegreyaSans.Family:             FontAlegreyaSans,
+	FontAlegreyaSansSC.Family:           FontAlegreyaSansSC,
+	FontAleo.Family:                     FontAleo,
+	FontAlmendra.Family:                 FontAlmendra,
+	FontAlumniSans.Family:               FontAlumniSans,
+	FontAlumniSansSC.Family:             FontAlumniSansSC,
+	FontAmaranth.Family:                 FontAmaranth,
+	FontAmiri.Family:                    FontAmiri,
+	FontAncizarSans.Family:              FontAncizarSans,
+	FontAncizarSerif.Family:             FontAncizarSerif,
+	FontAndadaPro.Family:                FontAndadaPro,
+	FontAndika.Family:                   FontAndika,
+	FontAnonymousPro.Family:             FontAnonymousPro,
+	FontAnybody.Family:                  FontAnybody,
+	FontArchivo.Family:                  FontArchivo,
+	FontArchivoNarrow.Family:            FontArchivoNarrow,
+	FontArimo.Family:                    FontArimo,
+	FontArsenal.Family:                  FontArsenal,
+	FontArsenalSC.Family:                FontArsenalSC,
+	FontArvo.Family:                     FontArvo,
+	FontAsap.Family:                     FontAsap,
+	FontAsapCondensed.Family:            FontAsapCondensed,
+	FontAtkinsonHyperlegible.Family:     FontAtkinsonHyperlegible,
+	FontAtkinsonHyperlegibleMono.Family: FontAtkinsonHyperlegibleMono,
+	FontAtkinsonHyperlegibleNext.Family: FontAtkinsonHyperlegibleNext,
+	FontAveriaLibre.Family:              FontAveriaLibre,
+	FontAveriaSansLibre.Family:          FontAveriaSansLibre,
+	FontAveriaSerifLibre.Family:         FontAveriaSerifLibre,
+	FontAzeretMono.Family:               FontAzeretMono,
+	FontB612.Family:                     FontB612,
+	FontB612Mono.Family:                 FontB612Mono,
+	FontBaiJamjuree.Family:              FontBaiJamjuree,
+	FontBalsamiqSans.Family:             FontBalsamiqSans,
+	FontBarlow.Family:                   FontBarlow,
+	FontBarlowCondensed.Family:          FontBarlowCondensed,
+	FontBarlowSemiCondensed.Family:      FontBarlowSemiCondensed,
+	FontBaskervville.Family:             FontBaskervville,
+	FontBeVietnamPro.Family:             FontBeVietnamPro,
+	FontBellota.Family:                  FontBellota,
+	FontBellotaText.Family:              FontBellotaText,
+	FontBesley.Family:                   FontBesley,
+	FontBitter.Family:                   FontBitter,
+	FontBodoniModa.Family:               FontBodoniModa,
+	FontBodoniModaSC.Family:             FontBodoniModaSC,
+	FontBrygada1918.Family:              FontBrygada1918,
+	FontCabin.Family:                    FontCabin,
+	FontCaladea.Family:                  FontCaladea,
+	FontCambay.Family:                   FontCambay,
+	FontCantarell.Family:                FontCantarell,
+	FontCarlito.Family:                  FontCarlito,
+	FontCascadiaCode.Family:             FontCascadiaCode,
+	FontCascadiaMono.Family:             FontCascadiaMono,
+	FontCaudex.Family:                   FontCaudex,
+	FontChakraPetch.Family:              FontChakraPetch,
+	FontCharisSIL.Family:                FontCharisSIL,
+	FontChironHeiHK.Family:              FontChironHeiHK,
+	FontChironSungHK.Family:             FontChironSungHK,
+	FontChivo.Family:                    FontChivo,
+	FontChivoMono.Family:                FontChivoMono,
+	FontComicNeue.Family:                FontComicNeue,
+	FontCormorant.Family:                FontCormorant,
+	FontCormorantGaramond.Family:        FontCormorantGaramond,
+	FontCormorantInfant.Family:          FontCormorantInfant,
+	FontCourierPrime.Family:             FontCourierPrime,
+	FontCousine.Family:                  FontCousine,
+	FontCrimsonPro.Family:               FontCrimsonPro,
+	FontCrimsonText.Family:              FontCrimsonText,
+	FontCuprum.Family:                   FontCuprum,
+	FontDMSans.Family:                   FontDMSans,
+	FontDaiBannaSIL.Family:              FontDaiBannaSIL,
+	FontEBGaramond.Family:               FontEBGaramond,
+	FontEconomica.Family:                FontEconomica,
+	FontEpilogue.Family:                 FontEpilogue,
+	FontExo.Family:                      FontExo,
+	FontExo2.Family:                     FontExo2,
+	FontExpletusSans.Family:             FontExpletusSans,
+	FontFahkwang.Family:                 FontFahkwang,
+	FontFamiljenGrotesk.Family:          FontFamiljenGrotesk,
+	FontFaustina.Family:                 FontFaustina,
+	FontFigtree.Family:                  FontFigtree,
+	FontFinlandica.Family:               FontFinlandica,
+	FontFiraSans.Family:                 FontFiraSans,
+	FontFiraSansCondensed.Family:        FontFiraSansCondensed,
+	FontFiraSansExtraCondensed.Family:   FontFiraSansExtraCondensed,
+	FontFraunces.Family:                 FontFraunces,
+	FontFunnelSans.Family:               FontFunnelSans,
+	FontGFSNeohellenic.Family:           FontGFSNeohellenic,
+	FontGantari.Family:                  FontGantari,
+	FontGelasio.Family:                  FontGelasio,
+	FontGenos.Family:                    FontGenos,
+	FontGentiumBookPlus.Family:          FontGentiumBookPlus,
+	FontGentiumPlus.Family:              FontGentiumPlus,
+	FontGeorama.Family:                  FontGeorama,
+	FontGlory.Family:                    FontGlory,
+	FontGoogleSansCode.Family:           FontGoogleSansCode,
+	FontGrandstander.Family:             FontGrandstander,
+	FontGrenze.Family:                   FontGrenze,
+	FontHankenGrotesk.Family:            FontHankenGrotesk,
+	FontHostGrotesk.Family:              FontHostGrotesk,
+	FontHubotSans.Family:                FontHubotSans,
+	FontIBMPlexMono.Family:              FontIBMPlexMono,
+	FontIBMPlexSans.Family:              FontIBMPlexSans,
+	FontIBMPlexSansCondensed.Family:     FontIBMPlexSansCondensed,
+	FontIBMPlexSerif.Family:             FontIBMPlexSerif,
+	FontIbarraRealNova.Family:           FontIbarraRealNova,
+	FontInclusiveSans.Family:            FontInclusiveSans,
+	FontInriaSans.Family:                FontInriaSans,
+	FontInriaSerif.Family:               FontInriaSerif,
+	FontInstrumentSans.Family:           FontInstrumentSans,
+	FontIntelOneMono.Family:             FontIntelOneMono,
+	FontInter.Family:                    FontInter,
+	FontInterTight.Family:               FontInterTight,
+	FontIstokWeb.Family:                 FontIstokWeb,
+	FontJetBrainsMono.Family:            FontJetBrainsMono,
+	FontJosefinSans.Family:              FontJosefinSans,
+	FontJosefinSlab.Family:              FontJosefinSlab,
+	FontJost.Family:                     FontJost,
+	FontK2D.Family:                      FontK2D,
+	FontKanit.Family:                    FontKanit,
+	FontKantumruyPro.Family:             FontKantumruyPro,
+	FontKarla.Family:                    FontKarla,
+	FontKoHo.Family:                     FontKoHo,
+	FontKodchasan.Family:                FontKodchasan,
+	FontKrub.Family:                     FontKrub,
+	FontKufam.Family:                    FontKufam,
+	FontKulimPark.Family:                FontKulimPark,
+	FontLabrada.Family:                  FontLabrada,
+	FontLato.Family:                     FontLato,
+	FontLibreBodoni.Family:              FontLibreBodoni,
+	FontLibreFranklin.Family:            FontLibreFranklin,
+	FontLisuBosa.Family:                 FontLisuBosa,
+	FontLiterata.Family:                 FontLiterata,
+	FontLivvic.Family:                   FontLivvic,
+	FontLobsterTwo.Family:               FontLobsterTwo,
+	FontLora.Family:                     FontLora,
+	FontMali.Family:                     FontMali,
+	FontManuale.Family:                  FontManuale,
+	FontMarvel.Family:                   FontMarvel,
+	FontMerriweather.Family:             FontMerriweather,
+	FontMerriweatherSans.Family:         FontMerriweatherSans,
+	FontMohave.Family:                   FontMohave,
+	FontMonaSans.Family:                 FontMonaSans,
+	FontMontserrat.Family:               FontMontserrat,
+	FontMontserratAlternates.Family:     FontMontserratAlternates,
+	FontMontserratUnderline.Family:      FontMontserratUnderline,
+	FontMulish.Family:                   FontMulish,
+	FontMuseoModerno.Family:             FontMuseoModerno,
+	FontNewsreader.Family:               FontNewsreader,
+	FontNiramit.Family:                  FontNiramit,
+	FontNobile.Family:                   FontNobile,
+	FontNoticiaText.Family:              FontNoticiaText,
+	FontNotoSans.Family:                 FontNotoSans,
+	FontNotoSansDisplay.Family:          FontNotoSansDisplay,
+	FontNotoSerif.Family:                FontNotoSerif,
+	FontNotoSerifDisplay.Family:         FontNotoSerifDisplay,
+	FontNotoSerifTamil.Family:           FontNotoSerifTamil,
+	FontNunito.Family:                   FontNunito,
+	FontNunitoSans.Family:               FontNunitoSans,
+	FontOpenSans.Family:                 FontOpenSans,
+	FontOverlock.Family:                 FontOverlock,
+	FontOverpass.Family:                 FontOverpass,
+	FontPTSans.Family:                   FontPTSans,
+	FontPTSerif.Family:                  FontPTSerif,
+	FontPathwayExtreme.Family:           FontPathwayExtreme,
+	FontPetrona.Family:                  FontPetrona,
+	FontPhilosopher.Family:              FontPhilosopher,
+	FontPiazzolla.Family:                FontPiazzolla,
+	FontPlatypi.Family:                  FontPlatypi,
+	FontPlayfair.Family:                 FontPlayfair,
+	FontPlayfairDisplay.Family:          FontPlayfairDisplay,
+	FontPlayfairDisplaySC.Family:        FontPlayfairDisplaySC,
+	FontPlusJakartaSans.Family:          FontPlusJakartaSans,
+	FontPoltawskiNowy.Family:            FontPoltawskiNowy,
+	FontPoppins.Family:                  FontPoppins,
+	FontPrompt.Family:                   FontPrompt,
+	FontProzaLibre.Family:               FontProzaLibre,
+	FontPublicSans.Family:               FontPublicSans,
+	FontPuritan.Family:                  FontPuritan,
+	FontQuantico.Family:                 FontQuantico,
+	FontQuattrocentoSans.Family:         FontQuattrocentoSans,
+	FontREM.Family:                      FontREM,
+	FontRadioCanada.Family:              FontRadioCanada,
+	FontRadioCanadaBig.Family:           FontRadioCanadaBig,
+	FontRaleway.Family:                  FontRaleway,
+	FontRambla.Family:                   FontRambla,
+	FontRasa.Family:                     FontRasa,
+	FontRedHatDisplay.Family:            FontRedHatDisplay,
+	FontRedHatMono.Family:               FontRedHatMono,
+	FontRedHatText.Family:               FontRedHatText,
+	FontRedditSans.Family:               FontRedditSans,
+	FontRethinkSans.Family:              FontRethinkSans,
+	FontRoboto.Family:                   FontRoboto,
+	FontRobotoCondensed.Family:          FontRobotoCondensed,
+	FontRobotoMono.Family:               FontRobotoMono,
+	FontRobotoSerif.Family:              FontRobotoSerif,
+	FontRokkitt.Family:                  FontRokkitt,
+	FontRosario.Family:                  FontRosario,
+	FontRubik.Family:                    FontRubik,
+	FontSTIXTwoText.Family:              FontSTIXTwoText,
+	FontSaira.Family:                    FontSaira,
+	FontSansation.Family:                FontSansation,
+	FontSansita.Family:                  FontSansita,
+	FontSarabun.Family:                  FontSarabun,
+	FontSavate.Family:                   FontSavate,
+	FontScada.Family:                    FontScada,
+	FontSchibstedGrotesk.Family:         FontSchibstedGrotesk,
+	FontShantellSans.Family:             FontShantellSans,
+	FontShare.Family:                    FontShare,
+	FontSofiaSans.Family:                FontSofiaSans,
+	FontSofiaSansCondensed.Family:       FontSofiaSansCondensed,
+	FontSofiaSansExtraCondensed.Family:  FontSofiaSansExtraCondensed,
+	FontSofiaSansSemiCondensed.Family:   FontSofiaSansSemiCondensed,
+	FontSometypeMono.Family:             FontSometypeMono,
+	FontSourGummy.Family:                FontSourGummy,
+	FontSourceCodePro.Family:            FontSourceCodePro,
+	FontSourceSans3.Family:              FontSourceSans3,
+	FontSourceSerif4.Family:             FontSourceSerif4,
+	FontSpaceMono.Family:                FontSpaceMono,
+	FontSpectral.Family:                 FontSpectral,
+	FontSpectralSC.Family:               FontSpectralSC,
+	FontSplineSansMono.Family:           FontSplineSansMono,
+	FontTaviraj.Family:                  FontTaviraj,
+	FontTeachers.Family:                 FontTeachers,
+	FontTexturina.Family:                FontTexturina,
+	FontThasadith.Family:                FontThasadith,
+	FontTinos.Family:                    FontTinos,
+	FontTitilliumWeb.Family:             FontTitilliumWeb,
+	FontTomorrow.Family:                 FontTomorrow,
+	FontTourney.Family:                  FontTourney,
+	FontTrirong.Family:                  FontTrirong,
+	FontTuffy.Family:                    FontTuffy,
+	FontUbuntu.Family:                   FontUbuntu,
+	FontUbuntuMono.Family:               FontUbuntuMono,
+	FontUbuntuSans.Family:               FontUbuntuSans,
+	FontUbuntuSansMono.Family:           FontUbuntuSansMono,
+	FontUnna.Family:                     FontUnna,
+	FontUrbanist.Family:                 FontUrbanist,
+	FontVictorMono.Family:               FontVictorMono,
+	FontVolkhov.Family:                  FontVolkhov,
+	FontVollkorn.Family:                 FontVollkorn,
+	FontWinkyRough.Family:               FontWinkyRough,
+	FontWinkySans.Family:                FontWinkySans,
+	FontWittgenstein.Family:             FontWittgenstein,
+	FontWixMadeforText.Family:           FontWixMadeforText,
+	FontWorkSans.Family:                 FontWorkSans,
+	FontYrsa.Family:                     FontYrsa,
+	FontYsabeau.Family:                  FontYsabeau,
+	FontYsabeauInfant.Family:            FontYsabeauInfant,
+	FontYsabeauOffice.Family:            FontYsabeauOffice,
+	FontZillaSlab.Family:                FontZillaSlab,
 }
 
 var CodeFontsGoogle = map[string]Font{
-	FontAnonymousPro.Family:      FontAnonymousPro,
-	FontAzeretMono.Family:        FontAzeretMono,
-	FontB612Mono.Family:          FontB612Mono,
-	FontChivoMono.Family:         FontChivoMono,
-	FontCourierPrime.Family:      FontCourierPrime,
-	FontCousine.Family:           FontCousine,
-	FontCutiveMono.Family:        FontCutiveMono,
-	FontDMMono.Family:            FontDMMono,
-	FontFiraCode.Family:          FontFiraCode,
-	FontFiraMono.Family:          FontFiraMono,
-	FontFragmentMono.Family:      FontFragmentMono,
-	FontIBMPlexMono.Family:       FontIBMPlexMono,
-	FontInconsolata.Family:       FontInconsolata,
-	FontJetBrainsMono.Family:     FontJetBrainsMono,
-	FontMajorMonoDisplay.Family:  FontMajorMonoDisplay,
-	FontMartianMono.Family:       FontMartianMono,
-	FontNanumGothicCoding.Family: FontNanumGothicCoding,
-	FontNotoSansMono.Family:      FontNotoSansMono,
-	FontNovaMono.Family:          FontNovaMono,
-	FontOverpassMono.Family:      FontOverpassMono,
-	FontOxygenMono.Family:        FontOxygenMono,
-	FontPTMono.Family:            FontPTMono,
-	FontRedHatMono.Family:        FontRedHatMono,
-	FontRobotoMono.Family:        FontRobotoMono,
-	FontShareTechMono.Family:     FontShareTechMono,
-	FontSourceCodePro.Family:     FontSourceCodePro,
-	FontSpaceMono.Family:         FontSpaceMono,
-	FontSplineSansMono.Family:    FontSplineSansMono,
-	FontSyneMono.Family:          FontSyneMono,
-	FontUbuntuMono.Family:        FontUbuntuMono,
-	FontVT323.Family:             FontVT323,
-	FontXanhMono.Family:          FontXanhMono,
+	FontAnonymousPro.Family:            FontAnonymousPro,
+	FontAzeretMono.Family:              FontAzeretMono,
+	FontB612Mono.Family:                FontB612Mono,
+	FontChivoMono.Family:               FontChivoMono,
+	FontCourierPrime.Family:            FontCourierPrime,
+	FontCousine.Family:                 FontCousine,
+	FontCutiveMono.Family:              FontCutiveMono,
+	FontDMMono.Family:                  FontDMMono,
+	FontFiraCode.Family:                FontFiraCode,
+	FontFiraMono.Family:                FontFiraMono,
+	FontFragmentMono.Family:            FontFragmentMono,
+	FontGeistMono.Family:               FontGeistMono,
+	FontGoogleSansCode.Family:          FontGoogleSansCode,
+	FontIBMPlexMono.Family:             FontIBMPlexMono,
+	FontInconsolata.Family:             FontInconsolata,
+	FontIntelOneMono.Family:            FontIntelOneMono,
+	FontJetBrainsMono.Family:           FontJetBrainsMono,
+	FontKodeMono.Family:                FontKodeMono,
+	FontLXGWWenKaiMonoTC.Family:        FontLXGWWenKaiMonoTC,
+	FontLekton.Family:                  FontLekton,
+	FontLibertinusMono.Family:          FontLibertinusMono,
+	FontMPLUS1Code.Family:              FontMPLUS1Code,
+	FontMajorMonoDisplay.Family:        FontMajorMonoDisplay,
+	FontMartianMono.Family:             FontMartianMono,
+	FontMaterialIcons.Family:           FontMaterialIcons,
+	FontMaterialIconsOutlined.Family:   FontMaterialIconsOutlined,
+	FontMaterialIconsRound.Family:      FontMaterialIconsRound,
+	FontMaterialIconsSharp.Family:      FontMaterialIconsSharp,
+	FontMaterialIconsTwoTone.Family:    FontMaterialIconsTwoTone,
+	FontMaterialSymbols.Family:         FontMaterialSymbols,
+	FontMaterialSymbolsOutlined.Family: FontMaterialSymbolsOutlined,
+	FontMaterialSymbolsRounded.Family:  FontMaterialSymbolsRounded,
+	FontMaterialSymbolsSharp.Family:    FontMaterialSymbolsSharp,
+	FontMonofett.Family:                FontMonofett,
+	FontNovaMono.Family:                FontNovaMono,
+	FontOverpassMono.Family:            FontOverpassMono,
+	FontOxygenMono.Family:              FontOxygenMono,
+	FontPTMono.Family:                  FontPTMono,
+	FontRedHatMono.Family:              FontRedHatMono,
+	FontRedditMono.Family:              FontRedditMono,
+	FontRobotoMono.Family:              FontRobotoMono,
+	FontShareTechMono.Family:           FontShareTechMono,
+	FontSixtyfour.Family:               FontSixtyfour,
+	FontSixtyfourConvergence.Family:    FontSixtyfourConvergence,
+	FontSometypeMono.Family:            FontSometypeMono,
+	FontSourceCodePro.Family:           FontSourceCodePro,
+	FontSpaceMono.Family:               FontSpaceMono,
+	FontSplineSansMono.Family:          FontSplineSansMono,
+	FontSyneMono.Family:                FontSyneMono,
+	FontUbuntuMono.Family:              FontUbuntuMono,
+	FontUbuntuSansMono.Family:          FontUbuntuSansMono,
+	FontVT323.Family:                   FontVT323,
+	FontVictorMono.Family:              FontVictorMono,
+	FontWorkbench.Family:               FontWorkbench,
+	FontXanhMono.Family:                FontXanhMono,
+}
+
+var FontAdventPro = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "sans-serif",
+	Family:         "Advent Pro",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontAfacad = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "sans-serif",
+	Family:         "Afacad",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
 }
 
 var FontAlbertSans = Font{
@@ -335,6 +438,18 @@ var FontAlumniSans = Font{
 	Type:           FontTypeGoogle,
 }
 
+var FontAlumniSansSC = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "sans-serif",
+	Family:         "Alumni Sans SC",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
 var FontAmaranth = Font{
 	CanUseForCode:  false,
 	CanUseForText:  true,
@@ -352,6 +467,30 @@ var FontAmiri = Font{
 	CanUseForText:  true,
 	Category:       "serif",
 	Family:         "Amiri",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontAncizarSans = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "sans-serif",
+	Family:         "Ancizar Sans",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontAncizarSerif = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "serif",
+	Family:         "Ancizar Serif",
 	FileBold:       "700",
 	FileBoldItalic: "700italic",
 	FileItalic:     "italic",
@@ -455,6 +594,18 @@ var FontArsenal = Font{
 	Type:           FontTypeGoogle,
 }
 
+var FontArsenalSC = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "sans-serif",
+	Family:         "Arsenal SC",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
 var FontArvo = Font{
 	CanUseForCode:  false,
 	CanUseForText:  true,
@@ -496,6 +647,30 @@ var FontAtkinsonHyperlegible = Font{
 	CanUseForText:  true,
 	Category:       "sans-serif",
 	Family:         "Atkinson Hyperlegible",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontAtkinsonHyperlegibleMono = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "sans-serif",
+	Family:         "Atkinson Hyperlegible Mono",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontAtkinsonHyperlegibleNext = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "sans-serif",
+	Family:         "Atkinson Hyperlegible Next",
 	FileBold:       "700",
 	FileBoldItalic: "700italic",
 	FileItalic:     "italic",
@@ -635,6 +810,18 @@ var FontBarlowSemiCondensed = Font{
 	Type:           FontTypeGoogle,
 }
 
+var FontBaskervville = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "serif",
+	Family:         "Baskervville",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
 var FontBeVietnamPro = Font{
 	CanUseForCode:  false,
 	CanUseForText:  true,
@@ -707,6 +894,18 @@ var FontBodoniModa = Font{
 	Type:           FontTypeGoogle,
 }
 
+var FontBodoniModaSC = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "serif",
+	Family:         "Bodoni Moda SC",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
 var FontBrygada1918 = Font{
 	CanUseForCode:  false,
 	CanUseForText:  true,
@@ -767,6 +966,42 @@ var FontCantarell = Font{
 	Type:           FontTypeGoogle,
 }
 
+var FontCarlito = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "sans-serif",
+	Family:         "Carlito",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontCascadiaCode = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "sans-serif",
+	Family:         "Cascadia Code",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontCascadiaMono = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "sans-serif",
+	Family:         "Cascadia Mono",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
 var FontCaudex = Font{
 	CanUseForCode:  false,
 	CanUseForText:  true,
@@ -796,6 +1031,30 @@ var FontCharisSIL = Font{
 	CanUseForText:  true,
 	Category:       "serif",
 	Family:         "Charis SIL",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontChironHeiHK = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "sans-serif",
+	Family:         "Chiron Hei HK",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontChironSungHK = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "serif",
+	Family:         "Chiron Sung HK",
 	FileBold:       "700",
 	FileBoldItalic: "700italic",
 	FileItalic:     "italic",
@@ -964,6 +1223,18 @@ var FontDMSans = Font{
 	CanUseForText:  true,
 	Category:       "sans-serif",
 	Family:         "DM Sans",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontDaiBannaSIL = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "serif",
+	Family:         "Dai Banna SIL",
 	FileBold:       "700",
 	FileBoldItalic: "700italic",
 	FileItalic:     "italic",
@@ -1187,6 +1458,18 @@ var FontFraunces = Font{
 	Type:           FontTypeGoogle,
 }
 
+var FontFunnelSans = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "sans-serif",
+	Family:         "Funnel Sans",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
 var FontGFSNeohellenic = Font{
 	CanUseForCode:  false,
 	CanUseForText:  true,
@@ -1211,6 +1494,18 @@ var FontGantari = Font{
 	Type:           FontTypeGoogle,
 }
 
+var FontGeistMono = Font{
+	CanUseForCode:  true,
+	CanUseForText:  false,
+	Category:       "monospace",
+	Family:         "Geist Mono",
+	FileBold:       "700",
+	FileBoldItalic: "700",
+	FileItalic:     "regular",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
 var FontGelasio = Font{
 	CanUseForCode:  false,
 	CanUseForText:  true,
@@ -1228,18 +1523,6 @@ var FontGenos = Font{
 	CanUseForText:  true,
 	Category:       "sans-serif",
 	Family:         "Genos",
-	FileBold:       "700",
-	FileBoldItalic: "700italic",
-	FileItalic:     "italic",
-	FileRegular:    "regular",
-	Type:           FontTypeGoogle,
-}
-
-var FontGentiumBookBasic = Font{
-	CanUseForCode:  false,
-	CanUseForText:  true,
-	Category:       "serif",
-	Family:         "Gentium Book Basic",
 	FileBold:       "700",
 	FileBoldItalic: "700italic",
 	FileItalic:     "italic",
@@ -1295,6 +1578,18 @@ var FontGlory = Font{
 	Type:           FontTypeGoogle,
 }
 
+var FontGoogleSansCode = Font{
+	CanUseForCode:  true,
+	CanUseForText:  true,
+	Category:       "monospace",
+	Family:         "Google Sans Code",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
 var FontGrandstander = Font{
 	CanUseForCode:  false,
 	CanUseForText:  true,
@@ -1324,6 +1619,30 @@ var FontHankenGrotesk = Font{
 	CanUseForText:  true,
 	Category:       "sans-serif",
 	Family:         "Hanken Grotesk",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontHostGrotesk = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "sans-serif",
+	Family:         "Host Grotesk",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontHubotSans = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "sans-serif",
+	Family:         "Hubot Sans",
 	FileBold:       "700",
 	FileBoldItalic: "700italic",
 	FileItalic:     "italic",
@@ -1391,6 +1710,18 @@ var FontIbarraRealNova = Font{
 	Type:           FontTypeGoogle,
 }
 
+var FontInclusiveSans = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "sans-serif",
+	Family:         "Inclusive Sans",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
 var FontInconsolata = Font{
 	CanUseForCode:  true,
 	CanUseForText:  false,
@@ -1420,6 +1751,42 @@ var FontInriaSerif = Font{
 	CanUseForText:  true,
 	Category:       "serif",
 	Family:         "Inria Serif",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontInstrumentSans = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "sans-serif",
+	Family:         "Instrument Sans",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontIntelOneMono = Font{
+	CanUseForCode:  true,
+	CanUseForText:  true,
+	Category:       "monospace",
+	Family:         "Intel One Mono",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontInter = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "sans-serif",
+	Family:         "Inter",
 	FileBold:       "700",
 	FileBoldItalic: "700italic",
 	FileItalic:     "italic",
@@ -1571,6 +1938,18 @@ var FontKodchasan = Font{
 	Type:           FontTypeGoogle,
 }
 
+var FontKodeMono = Font{
+	CanUseForCode:  true,
+	CanUseForText:  false,
+	Category:       "monospace",
+	Family:         "Kode Mono",
+	FileBold:       "700",
+	FileBoldItalic: "700",
+	FileItalic:     "regular",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
 var FontKrub = Font{
 	CanUseForCode:  false,
 	CanUseForText:  true,
@@ -1607,6 +1986,30 @@ var FontKulimPark = Font{
 	Type:           FontTypeGoogle,
 }
 
+var FontLXGWWenKaiMonoTC = Font{
+	CanUseForCode:  true,
+	CanUseForText:  false,
+	Category:       "monospace",
+	Family:         "LXGW WenKai Mono TC",
+	FileBold:       "700",
+	FileBoldItalic: "700",
+	FileItalic:     "regular",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontLabrada = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "serif",
+	Family:         "Labrada",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
 var FontLato = Font{
 	CanUseForCode:  false,
 	CanUseForText:  true,
@@ -1615,6 +2018,30 @@ var FontLato = Font{
 	FileBold:       "700",
 	FileBoldItalic: "700italic",
 	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontLekton = Font{
+	CanUseForCode:  true,
+	CanUseForText:  false,
+	Category:       "monospace",
+	Family:         "Lekton",
+	FileBold:       "700",
+	FileBoldItalic: "700",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontLibertinusMono = Font{
+	CanUseForCode:  true,
+	CanUseForText:  false,
+	Category:       "monospace",
+	Family:         "Libertinus Mono",
+	FileBold:       "regular",
+	FileBoldItalic: "regular",
+	FileItalic:     "regular",
 	FileRegular:    "regular",
 	Type:           FontTypeGoogle,
 }
@@ -1636,6 +2063,18 @@ var FontLibreFranklin = Font{
 	CanUseForText:  true,
 	Category:       "sans-serif",
 	Family:         "Libre Franklin",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontLisuBosa = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "serif",
+	Family:         "Lisu Bosa",
 	FileBold:       "700",
 	FileBoldItalic: "700italic",
 	FileItalic:     "italic",
@@ -1687,6 +2126,18 @@ var FontLora = Font{
 	FileBold:       "700",
 	FileBoldItalic: "700italic",
 	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontMPLUS1Code = Font{
+	CanUseForCode:  true,
+	CanUseForText:  false,
+	Category:       "monospace",
+	Family:         "M PLUS 1 Code",
+	FileBold:       "700",
+	FileBoldItalic: "700",
+	FileItalic:     "regular",
 	FileRegular:    "regular",
 	Type:           FontTypeGoogle,
 }
@@ -1751,6 +2202,114 @@ var FontMarvel = Font{
 	Type:           FontTypeGoogle,
 }
 
+var FontMaterialIcons = Font{
+	CanUseForCode:  true,
+	CanUseForText:  false,
+	Category:       "monospace",
+	Family:         "Material Icons",
+	FileBold:       "regular",
+	FileBoldItalic: "regular",
+	FileItalic:     "regular",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontMaterialIconsOutlined = Font{
+	CanUseForCode:  true,
+	CanUseForText:  false,
+	Category:       "monospace",
+	Family:         "Material Icons Outlined",
+	FileBold:       "regular",
+	FileBoldItalic: "regular",
+	FileItalic:     "regular",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontMaterialIconsRound = Font{
+	CanUseForCode:  true,
+	CanUseForText:  false,
+	Category:       "monospace",
+	Family:         "Material Icons Round",
+	FileBold:       "regular",
+	FileBoldItalic: "regular",
+	FileItalic:     "regular",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontMaterialIconsSharp = Font{
+	CanUseForCode:  true,
+	CanUseForText:  false,
+	Category:       "monospace",
+	Family:         "Material Icons Sharp",
+	FileBold:       "regular",
+	FileBoldItalic: "regular",
+	FileItalic:     "regular",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontMaterialIconsTwoTone = Font{
+	CanUseForCode:  true,
+	CanUseForText:  false,
+	Category:       "monospace",
+	Family:         "Material Icons Two Tone",
+	FileBold:       "regular",
+	FileBoldItalic: "regular",
+	FileItalic:     "regular",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontMaterialSymbols = Font{
+	CanUseForCode:  true,
+	CanUseForText:  false,
+	Category:       "monospace",
+	Family:         "Material Symbols",
+	FileBold:       "700",
+	FileBoldItalic: "700",
+	FileItalic:     "regular",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontMaterialSymbolsOutlined = Font{
+	CanUseForCode:  true,
+	CanUseForText:  false,
+	Category:       "monospace",
+	Family:         "Material Symbols Outlined",
+	FileBold:       "700",
+	FileBoldItalic: "700",
+	FileItalic:     "regular",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontMaterialSymbolsRounded = Font{
+	CanUseForCode:  true,
+	CanUseForText:  false,
+	Category:       "monospace",
+	Family:         "Material Symbols Rounded",
+	FileBold:       "700",
+	FileBoldItalic: "700",
+	FileItalic:     "regular",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontMaterialSymbolsSharp = Font{
+	CanUseForCode:  true,
+	CanUseForText:  false,
+	Category:       "monospace",
+	Family:         "Material Symbols Sharp",
+	FileBold:       "700",
+	FileBoldItalic: "700",
+	FileItalic:     "regular",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
 var FontMerriweather = Font{
 	CanUseForCode:  false,
 	CanUseForText:  true,
@@ -1787,6 +2346,30 @@ var FontMohave = Font{
 	Type:           FontTypeGoogle,
 }
 
+var FontMonaSans = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "sans-serif",
+	Family:         "Mona Sans",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontMonofett = Font{
+	CanUseForCode:  true,
+	CanUseForText:  false,
+	Category:       "monospace",
+	Family:         "Monofett",
+	FileBold:       "regular",
+	FileBoldItalic: "regular",
+	FileItalic:     "regular",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
 var FontMontserrat = Font{
 	CanUseForCode:  false,
 	CanUseForText:  true,
@@ -1804,6 +2387,18 @@ var FontMontserratAlternates = Font{
 	CanUseForText:  true,
 	Category:       "sans-serif",
 	Family:         "Montserrat Alternates",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontMontserratUnderline = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "sans-serif",
+	Family:         "Montserrat Underline",
 	FileBold:       "700",
 	FileBoldItalic: "700italic",
 	FileItalic:     "italic",
@@ -1831,18 +2426,6 @@ var FontMuseoModerno = Font{
 	FileBold:       "700",
 	FileBoldItalic: "700italic",
 	FileItalic:     "italic",
-	FileRegular:    "regular",
-	Type:           FontTypeGoogle,
-}
-
-var FontNanumGothicCoding = Font{
-	CanUseForCode:  true,
-	CanUseForText:  false,
-	Category:       "monospace",
-	Family:         "Nanum Gothic Coding",
-	FileBold:       "700",
-	FileBoldItalic: "700",
-	FileItalic:     "regular",
 	FileRegular:    "regular",
 	Type:           FontTypeGoogle,
 }
@@ -1915,18 +2498,6 @@ var FontNotoSansDisplay = Font{
 	FileBold:       "700",
 	FileBoldItalic: "700italic",
 	FileItalic:     "italic",
-	FileRegular:    "regular",
-	Type:           FontTypeGoogle,
-}
-
-var FontNotoSansMono = Font{
-	CanUseForCode:  true,
-	CanUseForText:  false,
-	Category:       "monospace",
-	Family:         "Noto Sans Mono",
-	FileBold:       "700",
-	FileBoldItalic: "700",
-	FileItalic:     "regular",
 	FileRegular:    "regular",
 	Type:           FontTypeGoogle,
 }
@@ -2099,6 +2670,18 @@ var FontPTSerif = Font{
 	Type:           FontTypeGoogle,
 }
 
+var FontPathwayExtreme = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "sans-serif",
+	Family:         "Pathway Extreme",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
 var FontPetrona = Font{
 	CanUseForCode:  false,
 	CanUseForText:  true,
@@ -2135,6 +2718,30 @@ var FontPiazzolla = Font{
 	Type:           FontTypeGoogle,
 }
 
+var FontPlatypi = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "serif",
+	Family:         "Platypi",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontPlayfair = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "serif",
+	Family:         "Playfair",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
 var FontPlayfairDisplay = Font{
 	CanUseForCode:  false,
 	CanUseForText:  true,
@@ -2164,6 +2771,18 @@ var FontPlusJakartaSans = Font{
 	CanUseForText:  true,
 	Category:       "sans-serif",
 	Family:         "Plus Jakarta Sans",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontPoltawskiNowy = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "serif",
+	Family:         "Poltawski Nowy",
 	FileBold:       "700",
 	FileBoldItalic: "700italic",
 	FileItalic:     "italic",
@@ -2255,11 +2874,35 @@ var FontQuattrocentoSans = Font{
 	Type:           FontTypeGoogle,
 }
 
+var FontREM = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "sans-serif",
+	Family:         "REM",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
 var FontRadioCanada = Font{
 	CanUseForCode:  false,
 	CanUseForText:  true,
 	Category:       "sans-serif",
 	Family:         "Radio Canada",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontRadioCanadaBig = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "sans-serif",
+	Family:         "Radio Canada Big",
 	FileBold:       "700",
 	FileBoldItalic: "700italic",
 	FileItalic:     "italic",
@@ -2339,6 +2982,42 @@ var FontRedHatText = Font{
 	Type:           FontTypeGoogle,
 }
 
+var FontRedditMono = Font{
+	CanUseForCode:  true,
+	CanUseForText:  false,
+	Category:       "monospace",
+	Family:         "Reddit Mono",
+	FileBold:       "700",
+	FileBoldItalic: "700",
+	FileItalic:     "regular",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontRedditSans = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "sans-serif",
+	Family:         "Reddit Sans",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontRethinkSans = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "sans-serif",
+	Family:         "Rethink Sans",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
 var FontRoboto = Font{
 	CanUseForCode:  false,
 	CanUseForText:  true,
@@ -2380,6 +3059,18 @@ var FontRobotoSerif = Font{
 	CanUseForText:  true,
 	Category:       "serif",
 	Family:         "Roboto Serif",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontRokkitt = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "serif",
+	Family:         "Rokkitt",
 	FileBold:       "700",
 	FileBoldItalic: "700italic",
 	FileItalic:     "italic",
@@ -2435,6 +3126,18 @@ var FontSaira = Font{
 	Type:           FontTypeGoogle,
 }
 
+var FontSansation = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "sans-serif",
+	Family:         "Sansation",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
 var FontSansita = Font{
 	CanUseForCode:  false,
 	CanUseForText:  true,
@@ -2459,6 +3162,18 @@ var FontSarabun = Font{
 	Type:           FontTypeGoogle,
 }
 
+var FontSavate = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "sans-serif",
+	Family:         "Savate",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
 var FontScada = Font{
 	CanUseForCode:  false,
 	CanUseForText:  true,
@@ -2471,10 +3186,34 @@ var FontScada = Font{
 	Type:           FontTypeGoogle,
 }
 
-var FontShare = Font{
+var FontSchibstedGrotesk = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "sans-serif",
+	Family:         "Schibsted Grotesk",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontShantellSans = Font{
 	CanUseForCode:  false,
 	CanUseForText:  true,
 	Category:       "display",
+	Family:         "Shantell Sans",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontShare = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "sans-serif",
 	Family:         "Share",
 	FileBold:       "700",
 	FileBoldItalic: "700italic",
@@ -2491,6 +3230,102 @@ var FontShareTechMono = Font{
 	FileBold:       "regular",
 	FileBoldItalic: "regular",
 	FileItalic:     "regular",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontSixtyfour = Font{
+	CanUseForCode:  true,
+	CanUseForText:  false,
+	Category:       "monospace",
+	Family:         "Sixtyfour",
+	FileBold:       "regular",
+	FileBoldItalic: "regular",
+	FileItalic:     "regular",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontSixtyfourConvergence = Font{
+	CanUseForCode:  true,
+	CanUseForText:  false,
+	Category:       "monospace",
+	Family:         "Sixtyfour Convergence",
+	FileBold:       "regular",
+	FileBoldItalic: "regular",
+	FileItalic:     "regular",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontSofiaSans = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "sans-serif",
+	Family:         "Sofia Sans",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontSofiaSansCondensed = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "sans-serif",
+	Family:         "Sofia Sans Condensed",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontSofiaSansExtraCondensed = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "sans-serif",
+	Family:         "Sofia Sans Extra Condensed",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontSofiaSansSemiCondensed = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "sans-serif",
+	Family:         "Sofia Sans Semi Condensed",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontSometypeMono = Font{
+	CanUseForCode:  true,
+	CanUseForText:  true,
+	Category:       "monospace",
+	Family:         "Sometype Mono",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontSourGummy = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "sans-serif",
+	Family:         "Sour Gummy",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
 	FileRegular:    "regular",
 	Type:           FontTypeGoogle,
 }
@@ -2519,35 +3354,11 @@ var FontSourceSans3 = Font{
 	Type:           FontTypeGoogle,
 }
 
-var FontSourceSansPro = Font{
-	CanUseForCode:  false,
-	CanUseForText:  true,
-	Category:       "sans-serif",
-	Family:         "Source Sans Pro",
-	FileBold:       "700",
-	FileBoldItalic: "700italic",
-	FileItalic:     "italic",
-	FileRegular:    "regular",
-	Type:           FontTypeGoogle,
-}
-
 var FontSourceSerif4 = Font{
 	CanUseForCode:  false,
 	CanUseForText:  true,
 	Category:       "serif",
 	Family:         "Source Serif 4",
-	FileBold:       "700",
-	FileBoldItalic: "700italic",
-	FileItalic:     "italic",
-	FileRegular:    "regular",
-	Type:           FontTypeGoogle,
-}
-
-var FontSourceSerifPro = Font{
-	CanUseForCode:  false,
-	CanUseForText:  true,
-	Category:       "serif",
-	Family:         "Source Serif Pro",
 	FileBold:       "700",
 	FileBoldItalic: "700italic",
 	FileItalic:     "italic",
@@ -2620,6 +3431,18 @@ var FontTaviraj = Font{
 	CanUseForText:  true,
 	Category:       "serif",
 	Family:         "Taviraj",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontTeachers = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "sans-serif",
+	Family:         "Teachers",
 	FileBold:       "700",
 	FileBoldItalic: "700italic",
 	FileItalic:     "italic",
@@ -2711,6 +3534,18 @@ var FontTrirong = Font{
 	Type:           FontTypeGoogle,
 }
 
+var FontTuffy = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "sans-serif",
+	Family:         "Tuffy",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
 var FontUbuntu = Font{
 	CanUseForCode:  false,
 	CanUseForText:  true,
@@ -2728,6 +3563,30 @@ var FontUbuntuMono = Font{
 	CanUseForText:  true,
 	Category:       "monospace",
 	Family:         "Ubuntu Mono",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontUbuntuSans = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "sans-serif",
+	Family:         "Ubuntu Sans",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontUbuntuSansMono = Font{
+	CanUseForCode:  true,
+	CanUseForText:  true,
+	Category:       "monospace",
+	Family:         "Ubuntu Sans Mono",
 	FileBold:       "700",
 	FileBoldItalic: "700italic",
 	FileItalic:     "italic",
@@ -2771,6 +3630,18 @@ var FontVT323 = Font{
 	Type:           FontTypeGoogle,
 }
 
+var FontVictorMono = Font{
+	CanUseForCode:  true,
+	CanUseForText:  true,
+	Category:       "monospace",
+	Family:         "Victor Mono",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
 var FontVolkhov = Font{
 	CanUseForCode:  false,
 	CanUseForText:  true,
@@ -2795,6 +3666,54 @@ var FontVollkorn = Font{
 	Type:           FontTypeGoogle,
 }
 
+var FontWinkyRough = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "sans-serif",
+	Family:         "Winky Rough",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontWinkySans = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "sans-serif",
+	Family:         "Winky Sans",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontWittgenstein = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "serif",
+	Family:         "Wittgenstein",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontWixMadeforText = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "sans-serif",
+	Family:         "Wix Madefor Text",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
 var FontWorkSans = Font{
 	CanUseForCode:  false,
 	CanUseForText:  true,
@@ -2803,6 +3722,18 @@ var FontWorkSans = Font{
 	FileBold:       "700",
 	FileBoldItalic: "700italic",
 	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontWorkbench = Font{
+	CanUseForCode:  true,
+	CanUseForText:  false,
+	Category:       "monospace",
+	Family:         "Workbench",
+	FileBold:       "regular",
+	FileBoldItalic: "regular",
+	FileItalic:     "regular",
 	FileRegular:    "regular",
 	Type:           FontTypeGoogle,
 }
@@ -2824,6 +3755,42 @@ var FontYrsa = Font{
 	CanUseForText:  true,
 	Category:       "serif",
 	Family:         "Yrsa",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontYsabeau = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "sans-serif",
+	Family:         "Ysabeau",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontYsabeauInfant = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "sans-serif",
+	Family:         "Ysabeau Infant",
+	FileBold:       "700",
+	FileBoldItalic: "700italic",
+	FileItalic:     "italic",
+	FileRegular:    "regular",
+	Type:           FontTypeGoogle,
+}
+
+var FontYsabeauOffice = Font{
+	CanUseForCode:  false,
+	CanUseForText:  true,
+	Category:       "sans-serif",
+	Family:         "Ysabeau Office",
 	FileBold:       "700",
 	FileBoldItalic: "700italic",
 	FileItalic:     "italic",
