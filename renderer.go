@@ -25,6 +25,8 @@ func New(options ...Option) goldrender.Renderer {
 	return r
 }
 
+var _ goldrender.Renderer = (*renderer)(nil)
+
 type renderer struct {
 	config *Config
 
@@ -36,8 +38,10 @@ type renderer struct {
 
 // AddOptions has no effect on this renderer
 // The method is to satisfy goldmark's Renderer interface
-func (r *renderer) AddOptions(_ ...goldrender.Option) {
-	// Nothing to add
+func (r *renderer) AddOptions(opts ...goldrender.Option) {
+	for _, opt := range opts {
+		opt.SetConfig(&r.config.Config)
+	}
 }
 
 // Satisfies the NodeRendererFuncRegisterer interface
@@ -79,12 +83,26 @@ func (r *renderer) Render(w io.Writer, source []byte, n ast.Node) error {
 		return fmt.Errorf("could not load fonts: %w", err)
 	}
 
+	// Default true since historically behavior was to escape (similar to goldmark html renderer)
+	escapeHTML, okEscapeHTMLOpt := r.config.Options[optEscapeHTML].(bool)
+	if !okEscapeHTMLOpt {
+		escapeHTML = true
+	}
+
+	// The goldmark html.WithUnsafe() uses the 'optUnsafe' value internally.
+	// We fallback to it if the escape opt is not explicitly set since users might expect this to work.
+	unsafe, okUnsafeOpt := r.config.Options[optUnsafe].(bool)
+	if okUnsafeOpt && !okEscapeHTMLOpt {
+		escapeHTML = !unsafe
+	}
+
 	writer := &Writer{
 		Pdf:         pdf,
 		ImageFS:     mergeFs(r.config.ImageFS, &inlineFs{}, &webFs{}),
 		Styles:      r.config.Styles,
 		DebugWriter: r.config.TraceWriter,
 		States:      states{stack: make([]*state, 0)},
+		EscapeHTML:  escapeHTML,
 	}
 
 	mleft, _, _, _ := pdf.GetMargins()

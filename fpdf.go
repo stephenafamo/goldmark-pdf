@@ -12,7 +12,7 @@ type FpdfConfig struct {
 	Title   string
 	Subject string
 
-	Orientation string // Default Portriat
+	Orientation string // Default Portrait
 	PaperSize   string // Default A4
 
 	Logo       io.Reader

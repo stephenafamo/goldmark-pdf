@@ -68,7 +68,11 @@ goldmark.New(
             pdf.WithHeadingFont(pdf.GetTextFont("IBM Plex Serif", pdf.FontLora)),
             pdf.WithBodyFont(pdf.GetTextFont("Open Sans", pdf.FontRoboto)),
             pdf.WithCodeFont(pdf.GetCodeFont("Inconsolata", pdf.FontRobotoMono)),
+            pdf.WithEscapeHTML(false), // default: true
         ),
+    ),
+    goldmark.WithRendererOptions(
+        html.WithUnsafe(), // for compatibility if WithEscapeHTML() is not used
     ),
 )
 ```

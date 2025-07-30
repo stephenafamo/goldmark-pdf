@@ -23,6 +23,7 @@ type Writer struct {
 	Styles  Styles
 	States  states
 
+	EscapeHTML  bool
 	DebugWriter io.Writer
 }
 
@@ -69,7 +70,7 @@ func (w *Writer) WriteText(stringContents string) {
 	if w.States.peek().destination != "" {
 		w.WriteLink(currentStyle, stringContents, w.States.peek().destination)
 	} else if w.States.peek().containerType == ast.KindHeading {
-		escapeWriter{}.write(bufw, []byte(stringContents))
+		escapeWriter{escapeHTML: w.EscapeHTML}.write(bufw, []byte(stringContents))
 	} else if w.States.peek().containerType == east.KindTableCell {
 		hw := cellwidths[curdatacell]
 		h := currentStyle.Size + currentStyle.Spacing
@@ -95,7 +96,7 @@ func (w *Writer) WriteText(stringContents string) {
 			}
 		}
 	} else {
-		escapeWriter{}.write(bufw, []byte(stringContents))
+		escapeWriter{escapeHTML: w.EscapeHTML}.write(bufw, []byte(stringContents))
 	}
 
 	bufw.Flush()
@@ -156,12 +157,14 @@ func (w *Writer) GetLinkStyle() *Style {
 	return &st
 }
 
-type escapeWriter struct{}
+type escapeWriter struct {
+	escapeHTML bool
+}
 
 func (e escapeWriter) escapeRune(writer util.BufWriter, r rune) {
 	if r < 256 {
 		v := util.EscapeHTMLByte(byte(r))
-		if v != nil {
+		if v != nil && e.escapeHTML {
 			_, _ = writer.Write(v)
 			return
 		}
@@ -246,7 +249,7 @@ func (e escapeWriter) rawWrite(writer util.BufWriter, source []byte) {
 	l := len(source)
 	for i := 0; i < l; i++ {
 		v := util.EscapeHTMLByte(source[i])
-		if v != nil {
+		if v != nil && e.escapeHTML {
 			_, _ = writer.Write(source[i-n : i])
 			n = 0
 			_, _ = writer.Write(v)
