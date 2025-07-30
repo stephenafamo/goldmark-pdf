@@ -645,6 +645,11 @@ func (r *nodeRederFuncs) renderTaskCheckBox(w *Writer, source []byte, node ast.N
 func (r *nodeRederFuncs) renderTable(w *Writer, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	if entering {
 		w.LogDebug("Table (entering)", "")
+
+		currentTableData = CollectTableData(w, source, node)
+		cellwidths = CalculateOptimalColumnWidths(w, currentTableData)
+		w.LogDebug("Table column widths calculated", fmt.Sprintf("Column widths: %v", cellwidths))
+
 		x := &state{
 			containerType: east.KindTable,
 			textStyle:     *w.Styles.THeader, listkind: notlist,
@@ -664,6 +669,9 @@ func (r *nodeRederFuncs) renderTable(w *Writer, source []byte, node ast.Node, en
 		w.States.pop()
 		w.LogDebug("Table (leaving)", "")
 		w.Pdf.BR(w.States.peek().textStyle.Size + w.States.peek().textStyle.Spacing)
+
+		currentTableData = nil
+		curdatacell = 0
 	}
 
 	return ast.WalkContinue, nil
@@ -678,7 +686,6 @@ func (r *nodeRederFuncs) renderTableHeader(w *Writer, source []byte, node ast.No
 			leftMargin: w.States.peek().leftMargin, isHeader: true,
 		}
 		w.States.push(x)
-		cellwidths = make([]float64, 0)
 	} else {
 		w.States.pop()
 		w.LogDebug("TableHead (leaving)", "")
