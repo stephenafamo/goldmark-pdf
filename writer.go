@@ -31,7 +31,7 @@ type Writer struct {
 func (r *Writer) LogDebug(source, msg string) {
 	if r.DebugWriter != nil {
 		indent := strings.Repeat("-", len(r.States.stack)-1)
-		r.DebugWriter.Write([]byte(fmt.Sprintf("%v[%v] %v\n", indent, source, msg)))
+		_, _ = fmt.Fprintf(r.DebugWriter, "%v[%v] %v\n", indent, source, msg)
 	}
 }
 
@@ -99,7 +99,7 @@ func (w *Writer) WriteText(stringContents string) {
 		escapeWriter{escapeHTML: w.EscapeHTML}.write(bufw, []byte(stringContents))
 	}
 
-	bufw.Flush()
+	_ = bufw.Flush()
 	w.Text(currentStyle, bb.String())
 }
 

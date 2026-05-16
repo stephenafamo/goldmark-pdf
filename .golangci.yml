@@ -1,0 +1,11 @@
+# https://golangci-lint.run/usage/configuration/
+version: "2"
+
+linters:
+  settings:
+    errcheck:
+      exclude-functions:
+        - (io.Closer).Close
+        - (*os.File).Close
+        - os.Remove
+        - os.RemoveAll

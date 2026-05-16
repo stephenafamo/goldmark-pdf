@@ -13,9 +13,10 @@ type Impl struct {
 	Height float64
 	GoPdf  *gopdf.GoPdf
 
-	textR, textG, textB       uint8
+	// TODO: remove these unused color fields once it's confirmed nothing relies on them.
+	textR, textG, textB       uint8 //nolint:unused
 	fillR, fillG, fillB       uint8
-	strokeR, strokeG, strokeB uint8
+	strokeR, strokeG, strokeB uint8 //nolint:unused
 }
 
 func (f Impl) maybeAddPage(lineHeight float64) {
@@ -70,8 +71,7 @@ func (f Impl) SetMarginTop(margin float64) {
 }
 
 func (f Impl) SetFont(family string, style string, size int) error {
-	f.GoPdf.SetFont(family, style, size)
-	return nil
+	return f.GoPdf.SetFont(family, style, size)
 }
 
 // Writing
@@ -226,18 +226,20 @@ func (f Impl) SplitText(text string, width float64) []string {
 }
 
 // Colors
+// TODO: value receivers make these field assignments ineffective; switch to pointer
+// receivers (or drop the fields) once the dependent code paths are verified.
 func (f Impl) SetDrawColor(r uint8, g uint8, b uint8) {
-	f.strokeR, f.strokeB, f.strokeG = r, g, b
+	f.strokeR, f.strokeB, f.strokeG = r, g, b //nolint:staticcheck // SA4005: see TODO above
 	f.GoPdf.SetStrokeColor(r, g, b)
 }
 
 func (f Impl) SetFillColor(r uint8, g uint8, b uint8) {
-	f.fillR, f.fillB, f.fillG = r, g, b
+	f.fillR, f.fillB, f.fillG = r, g, b //nolint:staticcheck // SA4005: see TODO above
 	f.GoPdf.SetFillColor(r, g, b)
 }
 
 func (f Impl) SetTextColor(r uint8, g uint8, b uint8) {
-	f.textR, f.textB, f.textG = r, g, b
+	f.textR, f.textB, f.textG = r, g, b //nolint:staticcheck // SA4005: see TODO above
 	f.GoPdf.SetTextColor(r, g, b)
 }
 
@@ -251,7 +253,8 @@ func (f Impl) Line(x1 float64, y1 float64, x2 float64, y2 float64) {
 }
 
 func (f Impl) Write(w io.Writer) error {
-	return f.GoPdf.Write(w)
+	_, err := f.GoPdf.WriteTo(w)
+	return err
 }
 
 func (f Impl) GetMargins() (left, top, right, bottom float64) {
@@ -272,8 +275,7 @@ func (f Impl) AddFont(family string, styleStr string, data []byte) error {
 		style = style | gopdf.Underline
 	}
 
-	f.GoPdf.AddTTFFontDataWithOption(family, data, gopdf.TtfOption{
+	return f.GoPdf.AddTTFFontDataWithOption(family, data, gopdf.TtfOption{
 		Style: style,
 	})
-	return nil
 }

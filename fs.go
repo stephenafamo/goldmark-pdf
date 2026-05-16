@@ -34,7 +34,7 @@ func getFileMime(f http.File) string {
 		return ""
 	}
 
-	f.Seek(0, io.SeekStart)
+	_, _ = f.Seek(0, io.SeekStart)
 	return mime.TypeByExtension(http.DetectContentType(sniff))
 }
 

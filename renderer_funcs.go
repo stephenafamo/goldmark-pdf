@@ -587,21 +587,21 @@ func (r *nodeRederFuncs) renderEmphasis(w *Writer, source []byte, node ast.Node,
 		switch n.Level {
 		case 2:
 			w.LogDebug("Strong (entering)", "")
-			w.States.peek().textStyle.format = strings.Replace(w.States.peek().textStyle.format, "B", "", -1)
+			w.States.peek().textStyle.format = strings.ReplaceAll(w.States.peek().textStyle.format, "B", "")
 			w.States.peek().textStyle.format += "B"
 		default:
 			w.LogDebug("Emph (entering)", "")
-			w.States.peek().textStyle.format = strings.Replace(w.States.peek().textStyle.format, "I", "", -1)
+			w.States.peek().textStyle.format = strings.ReplaceAll(w.States.peek().textStyle.format, "I", "")
 			w.States.peek().textStyle.format += "I"
 		}
 	} else {
 		switch n.Level {
 		case 2:
 			w.LogDebug("Strong (leaving)", "")
-			w.States.peek().textStyle.format = strings.Replace(w.States.peek().textStyle.format, "B", "", -1)
+			w.States.peek().textStyle.format = strings.ReplaceAll(w.States.peek().textStyle.format, "B", "")
 		default:
 			w.LogDebug("Emph (leaving)", "")
-			w.States.peek().textStyle.format = strings.Replace(w.States.peek().textStyle.format, "I", "", -1)
+			w.States.peek().textStyle.format = strings.ReplaceAll(w.States.peek().textStyle.format, "I", "")
 		}
 	}
 
@@ -614,7 +614,7 @@ func (r *nodeRederFuncs) renderStrikethrough(w *Writer, source []byte, node ast.
 		w.States.peek().textStyle.format += "S"
 	} else {
 		w.LogDebug("Strike (leaving)", "")
-		w.States.peek().textStyle.format = strings.Replace(w.States.peek().textStyle.format, "S", "", -1)
+		w.States.peek().textStyle.format = strings.ReplaceAll(w.States.peek().textStyle.format, "S", "")
 	}
 
 	return ast.WalkContinue, nil
@@ -743,7 +743,7 @@ func (r *nodeRederFuncs) renderTableCell(w *Writer, source []byte, node ast.Node
 		}
 		w.States.push(x)
 
-		w.WriteText(string(n.Text(source)))
+		w.WriteText(ExtractCellText(source, n))
 	} else {
 		w.States.pop()
 		w.LogDebug("TableCell (leaving)", "")

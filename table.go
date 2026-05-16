@@ -18,7 +18,7 @@ var currentTableData *TableData
 func ExtractCellText(source []byte, node ast.Node) string {
 	var buf bytes.Buffer
 
-	ast.Walk(node, func(n ast.Node, entering bool) (ast.WalkStatus, error) {
+	_ = ast.Walk(node, func(n ast.Node, entering bool) (ast.WalkStatus, error) {
 		if !entering {
 			return ast.WalkContinue, nil
 		}

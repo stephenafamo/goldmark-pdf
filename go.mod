@@ -1,6 +1,6 @@
 module github.com/stephenafamo/goldmark-pdf
 
-go 1.23.0
+go 1.24.0
 
 retract v0.3.0 // Wrong implementation of default cache
 
