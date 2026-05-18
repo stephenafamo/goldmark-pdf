@@ -2,6 +2,8 @@ package pdf
 
 import (
 	"bytes"
+	"strings"
+
 	"github.com/yuin/goldmark/ast"
 	east "github.com/yuin/goldmark/extension/ast"
 )
@@ -82,37 +84,55 @@ func CollectTableData(w *Writer, source []byte, node ast.Node) *TableData {
 	return &tData
 }
 
-// CalculateOptimalColumnWidths based on content
-func CalculateOptimalColumnWidths(w *Writer, tableData *TableData) []float64 {
+// CalculateTableOptimalColumnWidthsRowHeights returns per-column widths and
+// per-body-row wrapped line counts sized to the table's content.
+//
+// Widths use a CSS-like min/max algorithm: each column gets its content's
+// natural width when the table fits in the available page width, otherwise
+// space is distributed proportionally between min (header/default) and max
+// (longest cell) widths.
+//
+// Line counts are computed by wrapping each body cell at its final column
+// width and taking the tallest cell in the row. Header rows always render
+// single-line so they aren't included here. The returned slice is indexed
+// by body-row position (matching curTableRow in the renderer).
+func CalculateTableOptimalColumnWidthsRowHeights(w *Writer, tableData *TableData) ([]float64, []int) {
 	if tableData == nil {
-		return []float64{}
+		return []float64{}, []int{}
 	}
 
-	// Determine number of columns from headers or first row
+	// Headers define column count when present; otherwise fall back to the
+	// first row. Subsequent rows with different cell counts are clamped to
+	// numCols below to avoid out-of-range indexing.
 	numCols := len(tableData.Headers)
 	if numCols == 0 && len(tableData.Rows) > 0 {
 		numCols = len(tableData.Rows[0])
 	}
 
 	if numCols == 0 {
-		return []float64{}
+		return []float64{}, []int{}
 	}
 	minWidths := make([]float64, numCols)
 	maxWidths := make([]float64, numCols)
 
-	// Get page dimensions
 	pageWidth, _ := w.Pdf.GetPageSize()
 	marginLeft, _, marginRight, _ := w.Pdf.GetMargins()
 	availableWidth := pageWidth - marginLeft - marginRight
 
-	// Calculate minimum widths based on headers
+	// Measure each cell with the font it will actually render with, so the
+	// line counts we predict here match what the renderer produces. If we
+	// skipped this, the PDF's active font would be whatever ran last before
+	// the table (e.g. a heading), and MeasureTextWidth/SplitText would give
+	// the wrong character-per-line ratio — leading to over-tall rows.
+	if w.Styles.THeader != nil {
+		SetStyle(w.Pdf, *w.Styles.THeader)
+	}
 	if len(tableData.Headers) > 0 {
 		for i, header := range tableData.Headers {
 			minWidths[i] = w.Pdf.MeasureTextWidth(header) + (2 * w.Pdf.MeasureTextWidth("m"))
 			maxWidths[i] = minWidths[i]
 		}
 	} else {
-		// No headers, use a default minimum width
 		defaultWidth := w.Pdf.MeasureTextWidth("mmmm")
 		for i := 0; i < numCols; i++ {
 			minWidths[i] = defaultWidth
@@ -120,11 +140,13 @@ func CalculateOptimalColumnWidths(w *Writer, tableData *TableData) []float64 {
 		}
 	}
 
-	// Calculate maximum widths based on content
+	if w.Styles.TBody != nil {
+		SetStyle(w.Pdf, *w.Styles.TBody)
+	}
 	for _, row := range tableData.Rows {
 		for i, cell := range row {
 			if i < numCols {
-				cellWidth := w.Pdf.MeasureTextWidth(cell) + (2 * w.Pdf.MeasureTextWidth("m"))
+				cellWidth := w.Pdf.MeasureTextWidth(strings.ReplaceAll(cell, "\n", " ")) + (2 * w.Pdf.MeasureTextWidth("m"))
 				if cellWidth > maxWidths[i] {
 					maxWidths[i] = cellWidth
 				}
@@ -142,7 +164,6 @@ func CalculateOptimalColumnWidths(w *Writer, tableData *TableData) []float64 {
 
 	// Determine final column widths
 	finalWidths := make([]float64, numCols)
-
 	if totalMax <= availableWidth {
 		// All columns can have their maximum width
 		copy(finalWidths, maxWidths)
@@ -163,5 +184,26 @@ func CalculateOptimalColumnWidths(w *Writer, tableData *TableData) []float64 {
 		}
 	}
 
-	return finalWidths
+	// Once widths are determined, count wrapped lines per row. Wrap at the
+	// same effective width the renderer will use (column minus 1m of padding)
+	// so the line count we predict here matches what gets drawn.
+	mWidth := w.Pdf.MeasureTextWidth("m")
+	finalMaxLines := make([]int, len(tableData.Rows))
+	for i, row := range tableData.Rows {
+		maxLines := 1
+		for colIndex, cell := range row {
+			if colIndex >= numCols {
+				break
+			}
+			splitWidth := finalWidths[colIndex] - mWidth
+			if splitWidth < 1 {
+				splitWidth = finalWidths[colIndex]
+			}
+			lines := w.Pdf.SplitText(strings.ReplaceAll(cell, "\n", " "), splitWidth)
+			maxLines = max(maxLines, len(lines))
+		}
+		finalMaxLines[i] = maxLines
+	}
+
+	return finalWidths, finalMaxLines
 }
