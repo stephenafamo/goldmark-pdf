@@ -10,8 +10,8 @@ require (
 	github.com/go-swiss/fonts v0.0.0-20230807175105-90067c2f5042
 	github.com/jellydator/ttlcache/v3 v3.4.0
 	github.com/phpdave11/gofpdf v1.4.3
-	github.com/signintech/gopdf v0.33.0
-	github.com/yuin/goldmark v1.7.13
+	github.com/signintech/gopdf v0.36.0
+	github.com/yuin/goldmark v1.8.2
 	google.golang.org/api v0.243.0
 )
 

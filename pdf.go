@@ -20,6 +20,8 @@ type PDF interface {
 
 	SetMarginLeft(margin float64)
 	SetMarginRight(margin float64)
+	SetMarginTop(margin float64)
+	SetMarginBottom(margin float64)
 	GetMargins() (left, top, right, bottom float64)
 
 	// Font
@@ -53,8 +55,7 @@ type PDF interface {
 
 	// Width
 	SetLineWidth(width float64)
-	Line(x1, x2, y1, y2 float64)
-	// Rect(x1, x2, y1, y2 float64)
+	Line(x1, y1, x2, y2 float64)
 
 	// Circle draws a circle centered at (x, y) with radius r, filled with the
 	// current fill color. Backends that can't fill should stroke an outline.
