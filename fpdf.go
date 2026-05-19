@@ -3,10 +3,38 @@ package pdf
 import (
 	"context"
 	"io"
+	"strings"
 
 	"github.com/go-swiss/fonts"
 	"github.com/phpdave11/gofpdf"
 )
+
+// gofpdf panics on runes above the BMP (its Cw array is 65536 entries), so
+// substitute non-BMP runes with U+FFFD. Proper fix is the signintech/gopdf
+// backend (gopdf/), which handles them natively but is incomplete.
+// See https://github.com/stephenafamo/goldmark-pdf/issues/27.
+const (
+	maxSupportedRune = 0xFFFF
+	unknownRune      = '�' // �
+)
+
+func sanitizeUnicode(s string) string {
+	for _, r := range s {
+		if r > maxSupportedRune {
+			var b strings.Builder
+			b.Grow(len(s))
+			for _, r := range s {
+				if r > maxSupportedRune {
+					b.WriteRune(unknownRune)
+				} else {
+					b.WriteRune(r)
+				}
+			}
+			return b.String()
+		}
+	}
+	return s
+}
 
 type FpdfConfig struct {
 	Title   string
@@ -108,12 +136,12 @@ func (f Fpdf) SetFont(family string, style string, size int) error {
 
 // Writing
 func (f Fpdf) WriteText(height float64, text string) {
-	f.Fpdf.Write(height, text)
+	f.Fpdf.Write(height, sanitizeUnicode(text))
 }
 
 func (f Fpdf) CellFormat(w float64, h float64, txtStr string, borderStr string, ln int, alignStr string, fill bool, link int, linkStr string) {
 	f.Fpdf.SetCellMargin(0)
-	f.Fpdf.CellFormat(w, h, txtStr, borderStr, ln, alignStr, fill, link, linkStr)
+	f.Fpdf.CellFormat(w, h, sanitizeUnicode(txtStr), borderStr, ln, alignStr, fill, link, linkStr)
 }
 
 func (f *Fpdf) AddInternalLink(anchor string) {
@@ -123,6 +151,7 @@ func (f *Fpdf) AddInternalLink(anchor string) {
 }
 
 func (f *Fpdf) WriteInternalLink(lineHeight float64, text string, anchor string) {
+	text = sanitizeUnicode(text)
 	f.anchorLinks = append(f.anchorLinks, internalLink{
 		page:   f.Fpdf.PageNo(),
 		width:  f.MeasureTextWidth(text),
@@ -135,7 +164,7 @@ func (f *Fpdf) WriteInternalLink(lineHeight float64, text string, anchor string)
 }
 
 func (f Fpdf) WriteExternalLink(lineHeight float64, text string, destination string) {
-	f.Fpdf.WriteLinkString(lineHeight, text, destination)
+	f.Fpdf.WriteLinkString(lineHeight, sanitizeUnicode(text), destination)
 }
 
 func (f Fpdf) BR(height float64) {
@@ -153,11 +182,11 @@ func (f Fpdf) UseImage(imgID string, x, y, w, h float64) {
 
 // Measuring
 func (f Fpdf) MeasureTextWidth(text string) float64 {
-	return f.Fpdf.GetStringWidth(text)
+	return f.Fpdf.GetStringWidth(sanitizeUnicode(text))
 }
 
 func (f Fpdf) SplitText(txt string, w float64) []string {
-	lines := f.Fpdf.SplitLines([]byte(txt), w)
+	lines := f.Fpdf.SplitLines([]byte(sanitizeUnicode(txt)), w)
 
 	split := make([]string, len(lines))
 	for k, line := range lines {
