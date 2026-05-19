@@ -133,7 +133,7 @@ func SetStyle(pdf PDF, s Style) {
 	textR, textG, textB, _ := s.TextColor.RGBA()
 	fillR, fillG, fillB, _ := s.FillColor.RGBA()
 
-	pdf.SetFont(s.Font.Family, s.format, int(s.Size))
+	_ = pdf.SetFont(s.Font.Family, s.format, int(s.Size))
 	pdf.SetTextColor(uint8(textR>>8), uint8(textG>>8), uint8(textB>>8))
 	pdf.SetFillColor(uint8(fillR>>8), uint8(fillG>>8), uint8(fillB>>8))
 	pdf.SetDrawColor(uint8(fillR>>8), uint8(fillG>>8), uint8(fillB>>8))

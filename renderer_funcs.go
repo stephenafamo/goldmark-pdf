@@ -587,21 +587,21 @@ func (r *nodeRederFuncs) renderEmphasis(w *Writer, source []byte, node ast.Node,
 		switch n.Level {
 		case 2:
 			w.LogDebug("Strong (entering)", "")
-			w.States.peek().textStyle.format = strings.Replace(w.States.peek().textStyle.format, "B", "", -1)
+			w.States.peek().textStyle.format = strings.ReplaceAll(w.States.peek().textStyle.format, "B", "")
 			w.States.peek().textStyle.format += "B"
 		default:
 			w.LogDebug("Emph (entering)", "")
-			w.States.peek().textStyle.format = strings.Replace(w.States.peek().textStyle.format, "I", "", -1)
+			w.States.peek().textStyle.format = strings.ReplaceAll(w.States.peek().textStyle.format, "I", "")
 			w.States.peek().textStyle.format += "I"
 		}
 	} else {
 		switch n.Level {
 		case 2:
 			w.LogDebug("Strong (leaving)", "")
-			w.States.peek().textStyle.format = strings.Replace(w.States.peek().textStyle.format, "B", "", -1)
+			w.States.peek().textStyle.format = strings.ReplaceAll(w.States.peek().textStyle.format, "B", "")
 		default:
 			w.LogDebug("Emph (leaving)", "")
-			w.States.peek().textStyle.format = strings.Replace(w.States.peek().textStyle.format, "I", "", -1)
+			w.States.peek().textStyle.format = strings.ReplaceAll(w.States.peek().textStyle.format, "I", "")
 		}
 	}
 
@@ -614,7 +614,7 @@ func (r *nodeRederFuncs) renderStrikethrough(w *Writer, source []byte, node ast.
 		w.States.peek().textStyle.format += "S"
 	} else {
 		w.LogDebug("Strike (leaving)", "")
-		w.States.peek().textStyle.format = strings.Replace(w.States.peek().textStyle.format, "S", "", -1)
+		w.States.peek().textStyle.format = strings.ReplaceAll(w.States.peek().textStyle.format, "S", "")
 	}
 
 	return ast.WalkContinue, nil
@@ -642,13 +642,39 @@ func (r *nodeRederFuncs) renderTaskCheckBox(w *Writer, source []byte, node ast.N
 	return ast.WalkContinue, nil
 }
 
+// ensureRowFitsOnPage adds a new page before rendering a table row if the
+// row's height would push past the page's bottom margin. Without this,
+// gofpdf's auto page break triggers per-cell: cell 0 fits on page N, cell 1
+// doesn't, gofpdf adds a page just for cell 1, then the SetY(startY) at the
+// end of the cell jumps us back to page N's Y while the active page is N+1.
+// Subsequent cells repeat the same pattern, producing one page per cell.
+// Pre-breaking the page ensures every cell in the row starts at the same Y
+// on the same page.
+func ensureRowFitsOnPage(w *Writer, rowHeight float64) {
+	_, pageHeight := w.Pdf.GetPageSize()
+	_, _, _, bottomMargin := w.Pdf.GetMargins()
+	if w.Pdf.GetY()+rowHeight > pageHeight-bottomMargin {
+		w.Pdf.AddPage()
+	}
+}
+
+// tableRowHeight returns the rendered height of the row at curTableRow.
+// Header rows are always one line tall; body rows multiply lineHeight by the
+// precomputed max-line count. Falls back to a single line if curTableRow is
+// past the precomputed list (malformed tables with stray rows).
+func tableRowHeight(lineHeight float64, isHeader bool) float64 {
+	if isHeader || curTableRow >= len(cellMaxLines) {
+		return lineHeight
+	}
+	return lineHeight * float64(cellMaxLines[curTableRow])
+}
+
 func (r *nodeRederFuncs) renderTable(w *Writer, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	if entering {
-		w.LogDebug("Table (entering)", "")
-
 		currentTableData = CollectTableData(w, source, node)
-		cellwidths = CalculateOptimalColumnWidths(w, currentTableData)
-		w.LogDebug("Table column widths calculated", fmt.Sprintf("Column widths: %v", cellwidths))
+		cellwidths, cellMaxLines = CalculateTableOptimalColumnWidthsRowHeights(w, currentTableData)
+
+		w.LogDebug("Table (entering)", fmt.Sprintf("Column widths: %v, Row line counts: %v", cellwidths, cellMaxLines))
 
 		x := &state{
 			containerType: east.KindTable,
@@ -671,7 +697,8 @@ func (r *nodeRederFuncs) renderTable(w *Writer, source []byte, node ast.Node, en
 		w.Pdf.BR(w.States.peek().textStyle.Size + w.States.peek().textStyle.Spacing)
 
 		currentTableData = nil
-		curdatacell = 0
+		curTableCol = 0
+		curTableRow = 0
 	}
 
 	return ast.WalkContinue, nil
@@ -685,8 +712,23 @@ func (r *nodeRederFuncs) renderTableHeader(w *Writer, source []byte, node ast.No
 			textStyle:     *w.Styles.THeader, listkind: notlist,
 			leftMargin: w.States.peek().leftMargin, isHeader: true,
 		}
+		// If the header row won't fit on the current page, break to a new
+		// page now so all of its cells render together. Otherwise gofpdf's
+		// auto page break would trigger mid-row, splitting cells across pages.
+		ensureRowFitsOnPage(w, x.textStyle.Size+x.textStyle.Spacing)
+		// Position the cursor at the table's left edge for the header cells.
+		// (goldmark puts TableCells directly under TableHeader rather than
+		// wrapping them in a TableRow, so the SetX in renderTableRow doesn't
+		// fire for the header row.)
+		w.Pdf.SetX(x.leftMargin)
+		curTableCol = 0
 		w.States.push(x)
 	} else {
+		// Advance Y past the header row before popping. The header isn't a
+		// TableRow in goldmark's AST, so renderTableRow's leave-time BR never
+		// fires for it; without this, the first body row would render on top
+		// of the header.
+		w.Pdf.BR(w.States.peek().textStyle.Size + w.States.peek().textStyle.Spacing)
 		w.States.pop()
 		w.LogDebug("TableHead (leaving)", "")
 	}
@@ -695,25 +737,51 @@ func (r *nodeRederFuncs) renderTableHeader(w *Writer, source []byte, node ast.No
 
 func (r *nodeRederFuncs) renderTableRow(w *Writer, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	if entering {
-		w.LogDebug("TableRow (entering)", "")
+		// `isHeader` is inherited from the parent TableHeader/TableBody state
+		// so that header rows pick up the THeader style.
 		isHeader := w.States.peek().isHeader
+		rowLeftMargin := w.States.peek().leftMargin
 		x := &state{
 			containerType: east.KindTableRow,
 			textStyle:     *w.Styles.TBody, listkind: notlist,
-			leftMargin: w.States.peek().leftMargin, isHeader: isHeader,
+			leftMargin: rowLeftMargin, isHeader: isHeader,
 		}
-		if w.States.peek().isHeader {
+		if isHeader {
 			x.textStyle = *w.Styles.THeader
 		}
-		w.Pdf.BR(w.States.peek().textStyle.Size + w.States.peek().textStyle.Spacing)
+		rowHeight := tableRowHeight(x.textStyle.Size+x.textStyle.Spacing, isHeader)
+		w.LogDebug("TableRow (entering)", fmt.Sprintf("isHeader=%v Widths: %v Height: %v", isHeader, cellwidths, rowHeight))
 
-		// initialize cell widths slice; only one table at a time!
-		curdatacell = 0
+		// Break to a new page before rendering this row if it won't fit on
+		// the current one. See ensureRowFitsOnPage for why.
+		ensureRowFitsOnPage(w, rowHeight)
+
+		// Explicitly position X at the table's left edge for every row. The
+		// row-leave below calls BR(rowHeight) which already returns X to the
+		// page's left margin, but the table's left edge can differ from the
+		// page margin (e.g., when the table is inside a list or blockquote
+		// that pushed SetMarginLeft, or after some other element left the
+		// cursor offset). Doing it here makes the row-start invariant
+		// independent of prior cursor state.
+		w.Pdf.SetX(rowLeftMargin)
+		curTableCol = 0
 		w.States.push(x)
 	} else {
+		// All cells in the row have rendered with ln=0, so the cursor is at
+		// (rowEndX, rowStartY). Advance Y past the entire row before popping.
+		// Without this, the next row would start at startY + lineHeight and
+		// overlap multi-line content above it (original bug in issue #31).
+		s := w.States.peek()
+		w.Pdf.BR(tableRowHeight(s.textStyle.Size+s.textStyle.Spacing, s.isHeader))
+
 		w.States.pop()
 		w.LogDebug("TableRow (leaving)", "")
 		fill = !fill
+		// Only body rows have an entry in cellMaxLines, so only body rows
+		// advance the index.
+		if !s.isHeader {
+			curTableRow++
+		}
 	}
 
 	return ast.WalkContinue, nil
@@ -743,11 +811,11 @@ func (r *nodeRederFuncs) renderTableCell(w *Writer, source []byte, node ast.Node
 		}
 		w.States.push(x)
 
-		w.WriteText(string(n.Text(source)))
+		w.WriteText(ExtractCellText(source, n))
 	} else {
 		w.States.pop()
 		w.LogDebug("TableCell (leaving)", "")
-		curdatacell++
+		curTableCol++
 	}
 
 	return ast.WalkSkipChildren, nil

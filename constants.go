@@ -14,8 +14,13 @@ const (
 // in the table body as well.
 var cellwidths []float64
 
+// Per-body-row wrapped line counts. Indexed by body-row position, matching
+// curTableRow in the renderer.
+var cellMaxLines []int
+
 var (
-	curdatacell int
+	curTableCol int
+	curTableRow int
 	fill        = false
 )
 

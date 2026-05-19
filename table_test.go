@@ -102,7 +102,7 @@ func TestCalculateOptimalColumnWidths(t *testing.T) {
 				Pdf: mockPdf,
 			}
 
-			widths := CalculateOptimalColumnWidths(writer, tt.tableData)
+			widths, _ := CalculateTableOptimalColumnWidthsRowHeights(writer, tt.tableData)
 
 			if len(widths) != len(tt.expectedWidths) {
 				t.Errorf("Expected %d widths, got %d", len(tt.expectedWidths), len(widths))
@@ -140,7 +140,7 @@ func TestCalculateOptimalColumnWidths_EdgeCases(t *testing.T) {
 		},
 	}
 
-	widths := CalculateOptimalColumnWidths(writer, tableData)
+	widths, _ := CalculateTableOptimalColumnWidthsRowHeights(writer, tableData)
 
 	// Should handle gracefully and return 3 columns based on headers
 	if len(widths) != 3 {
@@ -153,7 +153,7 @@ func TestCalculateOptimalColumnWidths_EdgeCases(t *testing.T) {
 		Rows:    [][]string{},
 	}
 
-	widths2 := CalculateOptimalColumnWidths(writer, tableData2)
+	widths2, _ := CalculateTableOptimalColumnWidthsRowHeights(writer, tableData2)
 
 	// The third column should be wider than the second, which should be wider than the first
 	if widths2[0] >= widths2[1] || widths2[1] >= widths2[2] {
