@@ -142,6 +142,16 @@ When loading the fonts, they are downloaded on the fly using the [`fonts`](https
 
 If you'd like to use a font outside of these, you should pass your own font struct which have been loaded into the `PDF` object you set in the `Config`. Be sure to set the `FontType` to `FontTypeCustom` so that we do not attempt to download it.
 
+## Examples
+
+The [`examples/`](./examples) directory contains runnable markdown samples that render through both the `fpdf` and `gopdf` backends:
+
+```sh
+go run ./examples
+```
+
+This renders every `examples/*.md` and writes `<name>.<backend>.pdf` next to each input (e.g. `tables.md` → `tables.fpdf.pdf`, `tables.gopdf.pdf`).
+
 ## Contributing
 
 Here's a list of things that I'd love help with:
