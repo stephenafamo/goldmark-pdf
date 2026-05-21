@@ -452,21 +452,28 @@ func (r *nodeRederFuncs) renderThematicBreak(w *Writer, source []byte, node ast.
 	w.LogDebug("HorizontalRule", "")
 
 	LH := w.States.peek().textStyle.Size + w.States.peek().textStyle.Spacing
+	lineWidth := 3.0
 
 	// do a newline
 	w.Pdf.BR(LH)
-	// get the current x and y (assume left margin in ok)
-	x := w.Pdf.GetX()
-	y := w.Pdf.GetY()
+
 	// get the page margins
 	_, _, rm, _ := w.Pdf.GetMargins()
 	// get the page size
 	width, _ := w.Pdf.GetPageSize()
+
+	// get the current x and y (assume left margin in ok)
+	x := w.Pdf.GetX()
+
+	// Center the rule in the next line of whitespace so the gap above
+	// and below it is roughly equal.
+	y := w.Pdf.GetY() + LH/2 + lineWidth/2
+
 	// now compute the x value of the right side of page
 	newx := width - rm
 
-	w.Pdf.SetLineWidth(3)
-	w.Pdf.SetFillColor(200, 200, 200)
+	w.Pdf.SetLineWidth(lineWidth)
+	w.Pdf.SetDrawColor(200, 200, 200) // Line() strokes with the draw color.
 
 	w.LogDebug("... From X,Y", fmt.Sprintf("%v,%v", x, y))
 	w.Pdf.Line(x, y, newx, y)

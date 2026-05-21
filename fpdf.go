@@ -215,9 +215,7 @@ func (f Fpdf) SetLineWidth(width float64) {
 }
 
 func (f Fpdf) Line(x1 float64, y1 float64, x2 float64, y2 float64) {
-	f.Fpdf.MoveTo(x1, y1)
-	f.Fpdf.LineTo(x2, y2)
-	f.Fpdf.DrawPath("F")
+	f.Fpdf.Line(x1, y1, x2, y2)
 }
 
 func (f Fpdf) Write(w io.Writer) error {
