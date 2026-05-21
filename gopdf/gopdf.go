@@ -252,6 +252,13 @@ func (f Impl) Line(x1 float64, y1 float64, x2 float64, y2 float64) {
 	f.GoPdf.Line(x1, y1, x2, y2)
 }
 
+func (f Impl) Circle(x, y, r float64) {
+	// Oval is stroke-only, so we fake a fill with a stroked band: path-radius r/2 stroked at line width
+	// r yields a band from the center out to full radius r (inner hole = r/2 - r/2 = 0).
+	f.GoPdf.SetLineWidth(r)
+	f.GoPdf.Oval(x-r/2, y-r/2, x+r/2, y+r/2)
+}
+
 func (f Impl) Write(w io.Writer) error {
 	_, err := f.GoPdf.WriteTo(w)
 	return err

@@ -122,6 +122,12 @@ func (r *nodeRederFuncs) renderHeading(w *Writer, source []byte, node ast.Node, 
 func (r *nodeRederFuncs) renderTextBlock(w *Writer, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	if !entering {
 		w.LogDebug("Text Block", "")
+		// Inside a tight list item the list-item leave owns the vertical
+		// advance — emitting a BR here would double-advance and visually
+		// loosen tight lists. Skip it for that case only.
+		if w.States.peek().containerType == ast.KindListItem {
+			return ast.WalkContinue, nil
+		}
 		if node.FirstChild() != nil {
 			w.Pdf.BR(w.States.peek().textStyle.Size + w.States.peek().textStyle.Spacing)
 		}
@@ -335,6 +341,7 @@ func (r *nodeRederFuncs) renderList(w *Writer, source []byte, node ast.Node, ent
 			textStyle:     *w.Styles.Normal, itemNumber: 0,
 			listkind:   kind,
 			leftMargin: w.States.peek().leftMargin,
+			tightList:  n.IsTight,
 		}
 
 		w.Pdf.BR(LH)
@@ -371,6 +378,7 @@ func (r *nodeRederFuncs) renderListItem(w *Writer, source []byte, node ast.Node,
 			listkind:       w.States.peek().listkind,
 			firstParagraph: true,
 			leftMargin:     X,
+			tightList:      w.States.peek().tightList,
 		}
 		w.States.push(x)
 
@@ -378,11 +386,21 @@ func (r *nodeRederFuncs) renderListItem(w *Writer, source []byte, node ast.Node,
 		// text/paragraphs in the item
 		SetStyle(w.Pdf, w.States.peek().textStyle)
 		if w.States.peek().listkind == unordered {
-			w.Pdf.CellFormat(em, w.Styles.Normal.Size+w.Styles.Normal.Spacing,
-				"-",
-				"", 0, "L", false, 0, "")
+			// Draw a filled circle as the bullet. Avoids relying on a "•"  glyph being present in the active font.
+			lh := w.States.peek().textStyle.Size + w.States.peek().textStyle.Spacing
+			radius := w.States.peek().textStyle.Size / 6 // diameter ≈ Size/3, matching a typical "•" glyph
+			red, green, blue, _ := w.States.peek().textStyle.TextColor.RGBA()
+
+			startX := w.Pdf.GetX()
+			cx := startX + em/2
+			cy := w.Pdf.GetY() + lh/2
+
+			w.Pdf.SetFillColor(uint8(red>>8), uint8(green>>8), uint8(blue>>8))
+			w.Pdf.SetDrawColor(uint8(red>>8), uint8(green>>8), uint8(blue>>8))
+			w.Pdf.Circle(cx, cy, radius)
+			w.Pdf.SetX(startX + em)
 		} else if w.States.peek().listkind == ordered {
-			w.Pdf.CellFormat(em, w.Styles.Normal.Size+w.Styles.Normal.Spacing,
+			w.Pdf.CellFormat(em, w.States.peek().textStyle.Size+w.States.peek().textStyle.Spacing,
 				fmt.Sprintf("%v.", w.States.peek().itemNumber),
 				"", 0, "L", false, 0, "")
 		}
@@ -393,7 +411,14 @@ func (r *nodeRederFuncs) renderListItem(w *Writer, source []byte, node ast.Node,
 		w.LogDebug(fmt.Sprintf("%v Item (leaving)", w.States.peek().listkind), "")
 		// before we output the new line, reset left margin
 		w.Pdf.SetMarginLeft(w.States.peek().leftMargin)
-		w.Pdf.BR(w.States.peek().textStyle.Size + w.States.peek().textStyle.Spacing)
+		lh := w.States.peek().textStyle.Size + w.States.peek().textStyle.Spacing
+		if w.States.peek().tightList {
+			// Tight list: items separated by a single line height (CSS default).
+			w.Pdf.BR(lh)
+		} else {
+			// Loose list: paragraph-style gap between items (extra blank line).
+			w.Pdf.BR(lh * 2)
+		}
 		w.States.parent().itemNumber++
 		w.States.pop()
 	}
