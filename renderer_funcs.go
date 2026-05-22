@@ -259,7 +259,12 @@ func (r *nodeRederFuncs) renderCodeBlock(w *Writer, source []byte, node ast.Node
 					addRightPad()
 				}
 
-				if k != len(tokenLines)-1 || v == "" {
+				// Fill the left gutter on every row about to receive content.
+				// X == mleft+height means a fresh row (just had a BR), so the
+				// area mleft..mleft+height hasn't been filled yet — without
+				// this, the first row of the block and any row reached via
+				// the last line of a multi-line token would leak the page bg.
+				if w.Pdf.GetX() == mleft+height {
 					addLeftPad()
 				}
 
