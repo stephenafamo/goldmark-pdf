@@ -9,19 +9,21 @@ const (
 	definition
 )
 
-// This slice of float64 contains the width of each cell
-// in the header of a table. These will be the widths used
-// in the table body as well.
-var cellwidths []float64
-
-// Per-body-row wrapped line counts. Indexed by body-row position, matching
-// curTableRow in the renderer.
-var cellMaxLines []int
-
 var (
+	// This slice of float64 contains the width of each cell
+	// in the header of a table. These will be the widths used
+	// in the table body as well.
+	cellwidths []float64
+
+	// Per-body-row wrapped line counts. Indexed by body-row position, matching
+	// curTableRow in the renderer.
+	cellMaxLines []int
+
 	curTableCol int
 	curTableRow int
-	fill        = false
+	cellPadding float64
+
+	fill = false
 )
 
 func (n listType) String() string {
