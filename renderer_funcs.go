@@ -400,9 +400,11 @@ func (r *nodeRederFuncs) renderListItem(w *Writer, source []byte, node ast.Node,
 			w.Pdf.Circle(cx, cy, radius)
 			w.Pdf.SetX(startX + em)
 		} else if w.States.peek().listkind == ordered {
+			// Right-align so the "." sits close to the text, matching the
+			// optical spacing of the centered bullet for unordered lists.
 			w.Pdf.CellFormat(em, w.States.peek().textStyle.Size+w.States.peek().textStyle.Spacing,
-				fmt.Sprintf("%v.", w.States.peek().itemNumber),
-				"", 0, "L", false, 0, "")
+				fmt.Sprintf("%v. ", w.States.peek().itemNumber),
+				"", 0, "R", false, 0, "")
 		}
 
 		w.Pdf.SetMarginLeft(w.States.peek().leftMargin + em)
