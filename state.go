@@ -10,7 +10,8 @@ type state struct {
 
 	// populated if node type is a list
 	listkind   listType
-	itemNumber int // only if an ordered list
+	itemNumber int  // only if an ordered list
+	tightList  bool // true if the containing list is a CommonMark "tight" list
 
 	// populated if node type is a link
 	destination string

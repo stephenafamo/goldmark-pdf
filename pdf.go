@@ -56,6 +56,10 @@ type PDF interface {
 	Line(x1, x2, y1, y2 float64)
 	// Rect(x1, x2, y1, y2 float64)
 
+	// Circle draws a circle centered at (x, y) with radius r, filled with the
+	// current fill color. Backends that can't fill should stroke an outline.
+	Circle(x, y, r float64)
+
 	// Rendering
 	Write(io.Writer) error
 }

@@ -218,6 +218,10 @@ func (f Fpdf) Line(x1 float64, y1 float64, x2 float64, y2 float64) {
 	f.Fpdf.Line(x1, y1, x2, y2)
 }
 
+func (f Fpdf) Circle(x, y, r float64) {
+	f.Fpdf.Circle(x, y, r, "F")
+}
+
 func (f Fpdf) Write(w io.Writer) error {
 	// write the internal links
 	for _, link := range f.anchorLinks {

@@ -24,6 +24,7 @@ func (m *MockPdf) GetPageSize() (width, height float64) {
 func (m *MockPdf) GetX() float64               { return 0 }
 func (m *MockPdf) GetY() float64               { return 0 }
 func (m *MockPdf) Line(x1, x2, y1, y2 float64) {}
+func (m *MockPdf) Circle(x, y, r float64)      {}
 func (m *MockPdf) MeasureTextWidth(s string) float64 {
 	// Simple approximation: each character is 5 units wide
 	return float64(len(s)) * 5.0

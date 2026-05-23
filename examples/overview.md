@@ -54,6 +54,25 @@ Nested mix (bullets under numbers):
    1. Nested numbered
    2. Another nested numbered
 
+Tight vs. loose: per CommonMark, a list with no blank lines between items is
+*tight* (items separated by a single line height, like the CSS default).
+A list with blank lines between items is *loose* (paragraph-style gap
+between items).
+
+Tight (no blank lines in source):
+
+- Apples
+- Oranges
+- Pears
+
+Loose (blank lines between items):
+
+- Apples
+
+- Oranges
+
+- Pears
+
 ## Blockquotes
 
 > A blockquote is rendered with the `Blockquote` style from
