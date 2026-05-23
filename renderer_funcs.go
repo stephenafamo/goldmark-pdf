@@ -672,19 +672,26 @@ func ensureRowFitsOnPage(w *Writer, rowHeight float64) {
 
 // tableRowHeight returns the rendered height of the row at curTableRow.
 // Header rows are always one line tall; body rows multiply lineHeight by the
-// precomputed max-line count. Falls back to a single line if curTableRow is
-// past the precomputed list (malformed tables with stray rows).
+// precomputed max-line count. Each row also gets 2*cellPadding of vertical
+// breathing room (top + bottom) inside its border. Falls back to a single
+// line if curTableRow is past the precomputed list (malformed tables with
+// stray rows).
 func tableRowHeight(lineHeight float64, isHeader bool) float64 {
 	if isHeader || curTableRow >= len(cellMaxLines) {
-		return lineHeight
+		return lineHeight + 2*cellPadding
 	}
-	return lineHeight * float64(cellMaxLines[curTableRow])
+	return lineHeight*float64(cellMaxLines[curTableRow]) + 2*cellPadding
 }
 
 func (r *nodeRederFuncs) renderTable(w *Writer, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	if entering {
 		currentTableData = CollectTableData(w, source, node)
 		cellwidths, cellMaxLines = CalculateTableOptimalColumnWidthsRowHeights(w, currentTableData)
+		// Compute the per-cell inset once for the whole table. The width
+		// allocator left TBody as the active style, so this uses the body
+		// font's m-width; the slight difference from THeader is negligible
+		// for visual padding.
+		cellPadding = w.Pdf.MeasureTextWidth("m") / 2
 
 		w.LogDebug("Table (entering)", fmt.Sprintf("Column widths: %v, Row line counts: %v", cellwidths, cellMaxLines))
 
@@ -711,6 +718,7 @@ func (r *nodeRederFuncs) renderTable(w *Writer, source []byte, node ast.Node, en
 		currentTableData = nil
 		curTableCol = 0
 		curTableRow = 0
+		cellPadding = 0
 	}
 
 	return ast.WalkContinue, nil
@@ -727,7 +735,7 @@ func (r *nodeRederFuncs) renderTableHeader(w *Writer, source []byte, node ast.No
 		// If the header row won't fit on the current page, break to a new
 		// page now so all of its cells render together. Otherwise gofpdf's
 		// auto page break would trigger mid-row, splitting cells across pages.
-		ensureRowFitsOnPage(w, x.textStyle.Size+x.textStyle.Spacing)
+		ensureRowFitsOnPage(w, x.textStyle.Size+x.textStyle.Spacing+2*cellPadding)
 		// Position the cursor at the table's left edge for the header cells.
 		// (goldmark puts TableCells directly under TableHeader rather than
 		// wrapping them in a TableRow, so the SetX in renderTableRow doesn't
@@ -740,7 +748,7 @@ func (r *nodeRederFuncs) renderTableHeader(w *Writer, source []byte, node ast.No
 		// TableRow in goldmark's AST, so renderTableRow's leave-time BR never
 		// fires for it; without this, the first body row would render on top
 		// of the header.
-		w.Pdf.BR(w.States.peek().textStyle.Size + w.States.peek().textStyle.Spacing)
+		w.Pdf.BR(w.States.peek().textStyle.Size + w.States.peek().textStyle.Spacing + 2*cellPadding)
 		w.States.pop()
 		w.LogDebug("TableHead (leaving)", "")
 	}
@@ -823,7 +831,98 @@ func (r *nodeRederFuncs) renderTableCell(w *Writer, source []byte, node ast.Node
 		}
 		w.States.push(x)
 
-		w.WriteText(ExtractCellText(source, n))
+		text := strings.ReplaceAll(ExtractCellText(source, n), "\n", " ")
+		width := cellwidths[curTableCol]
+		lineHeight := x.textStyle.Size + x.textStyle.Spacing
+
+		// cellPadding (set in renderTable entering) gives the text visible
+		// breathing room from all four cell borders. The horizontal inset
+		// is half an m of slack on each side; the vertical inset is the
+		// same value applied above and below the text via top/bottom "pad
+		// rows" that draw only the L/R border (and fill).
+
+		if isHeader {
+			w.LogDebug("... table header cell", fmt.Sprintf("Width=%v, height=%v", width, lineHeight))
+			startX := w.Pdf.GetX()
+			totalHeight := lineHeight + 2*cellPadding
+			// Draw the cell box (border on all sides + fill) without text.
+			w.Pdf.CellFormat(width, totalHeight, "", "1", 0, "L", true, 0, "")
+			// Draw the text inset horizontally; CellFormat's default vertical
+			// alignment ("M"/middle) centers it within totalHeight, giving
+			// the padding as top/bottom whitespace.
+			w.Pdf.SetX(startX + cellPadding)
+			w.Pdf.CellFormat(width-2*cellPadding, totalHeight, text, "", 0, "L", false, 0, "")
+			w.Pdf.SetX(startX + width)
+		} else {
+			// Body cell rendering, see issue #31.
+			//
+			// We can't pass the full row height to a single CellFormat call:
+			// gofpdf.CellFormat doesn't wrap, so overflowing text would draw on
+			// one line and visually escape the cell. Instead we split the text
+			// into wrapped lines ourselves and draw each on its own row of the
+			// cell. cellMaxLines (precomputed in table.go) gives the tallest
+			// cell in this row, so all cells in the row render the same number
+			// of "line slots" — short cells fill trailing slots with empty
+			// text but still draw the L/R border.
+			maxLines := 1
+			if curTableRow < len(cellMaxLines) {
+				maxLines = cellMaxLines[curTableRow]
+			}
+			w.LogDebug("... table body cell", fmt.Sprintf("Width=%v, lines=%v", width, maxLines))
+			// splitWidth must match the wrap width table.go assumed when
+			// precomputing cellMaxLines (also width - m), so the row height
+			// fits the rendered text.
+			splitWidth := width - 2*cellPadding
+			if splitWidth < 1 {
+				splitWidth = width
+			}
+			lines := w.Pdf.SplitText(text, splitWidth)
+
+			// The cell renders as: top-pad row, one row per wrapped line, then
+			// bottom-pad row. Each chunk draws only the L/R border (and fill),
+			// so the visible left/right edges stack into a continuous border;
+			// the top/bottom borders come from the surrounding cells (header
+			// box above, table's closing T-border below). For each text row we
+			// do two CellFormat calls — a border+fill pass at full width, then
+			// a text-only pass inset by `cellPadding` — to give the text
+			// visible left/right padding inside the L/R borders.
+			startX := w.Pdf.GetX()
+			startY := w.Pdf.GetY()
+
+			// Top padding row. SetY must come before SetX because SetY resets
+			// X to the page's left margin in gofpdf, which would otherwise
+			// undo SetX(startX) and make every non-first cell's loop draw
+			// at the wrong X (overpainting the previous cell with the row's
+			// fill color).
+			w.Pdf.CellFormat(width, cellPadding, "", "LR", 0, "", fill, 0, "")
+			w.Pdf.SetY(startY + cellPadding)
+			w.Pdf.SetX(startX)
+
+			// Per-line border+text passes.
+			for i := 0; i < maxLines; i++ {
+				if i > 0 {
+					w.Pdf.BR(lineHeight)
+					w.Pdf.SetX(startX)
+				}
+				lineText := ""
+				if i < len(lines) {
+					lineText = lines[i]
+				}
+				w.Pdf.CellFormat(width, lineHeight, "", "LR", 0, "", fill, 0, "")
+				w.Pdf.SetX(startX + cellPadding)
+				w.Pdf.CellFormat(width-2*cellPadding, lineHeight, lineText, "", 0, "", false, 0, "")
+			}
+
+			// Bottom padding row.
+			w.Pdf.BR(lineHeight)
+			w.Pdf.SetX(startX)
+			w.Pdf.CellFormat(width, cellPadding, "", "LR", 0, "", fill, 0, "")
+
+			// Restore cursor to the row's top so the next sibling cell starts
+			// at the same baseline.
+			w.Pdf.SetY(startY)
+			w.Pdf.SetX(startX + width)
+		}
 	} else {
 		w.States.pop()
 		w.LogDebug("TableCell (leaving)", "")
