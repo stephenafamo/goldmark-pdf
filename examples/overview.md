@@ -117,6 +117,13 @@ usage: cbench.py [-h] -cpp CPP [-hwroot HWROOT] [-rundir RUNDIR] [-plusArgsVlog 
                  [-disableSelfCheck] [-nocomp] [-dump] [-iss] [-rtl_syn] [-rtl_fpga]
 ```
 
+## Images
+
+Images can be loaded from a remote URL. The Markdown alt text doubles as a caption beneath the image:
+
+![A mountain landscape (Lorem Picsum stock photo id 1015).](https://picsum.photos/id/1015/640/360.jpg)
+
+
 ## Horizontal rule
 
 A `---` on its own line draws a horizontal rule:

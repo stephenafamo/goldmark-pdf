@@ -3,6 +3,7 @@ package pdf
 import (
 	"bytes"
 	"fmt"
+	"image/color"
 	"io"
 	"log"
 	"strings"
@@ -617,6 +618,33 @@ func (r *nodeRederFuncs) renderImage(w *Writer, source []byte, node ast.Node, en
 			mimeType := getFileMime(imgFile)
 			w.Pdf.RegisterImage(imgPath, getImageMime(mimeType), imgFile)
 			w.Pdf.UseImage(imgPath, mleft*2, w.Pdf.GetY(), maxw, 0)
+
+			// Concatenates the text content of an inline node's descendants.
+			// Used to build a plain-text caption from an image's alt-text children.
+			var altTextBuf bytes.Buffer
+			_ = ast.Walk(n, func(c ast.Node, entering bool) (ast.WalkStatus, error) {
+				if entering {
+					if t, ok := c.(*ast.Text); ok {
+						altTextBuf.Write(t.Segment.Value(source))
+					}
+				}
+
+				return ast.WalkContinue, nil
+			})
+
+			// Render the alt text as an italic, centered caption
+			// under the image, then skip children so the default inline
+			// walker doesn't redraw it left-aligned at the page margin.
+			if altTextBuf.String() != "" {
+				capStyle := *w.Styles.Normal
+				capStyle.format += "I"
+				capStyle.TextColor = color.RGBA{R: 100, G: 100, B: 100, A: 255}
+				SetStyle(w.Pdf, capStyle)
+				w.Pdf.SetX(mleft * 2)
+				w.Pdf.CellFormat(maxw, capStyle.Size+capStyle.Spacing, altTextBuf.String(), "", 1, "C", false, 0, "")
+				SetStyle(w.Pdf, w.States.peek().textStyle)
+			}
+			return ast.WalkSkipChildren, nil
 		} else {
 			log.Printf("IMAGE ERROR: %s, %v", imgPath, err)
 			w.LogDebug("Image (file error)", err.Error())
