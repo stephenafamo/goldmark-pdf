@@ -89,6 +89,15 @@ Indented code (four-space prefix) also works without a language tag:
     untagged := "no syntax highlighting here"
     fmt.Println(untagged)
 
+When a chroma token's text is wider than the remaining line, the renderer
+wraps it onto a continuation row. Each continuation row must redraw the left
+gutter so the code-block background extends all the way to the left edge
+
+```bash
+usage: cbench.py [-h] -cpp CPP [-hwroot HWROOT] [-rundir RUNDIR] [-plusArgsVlog PLUSARGSVLOG] [-plusArgsVcs PLUSARGSVCS] [-plusArgsSim PLUSARGSSIM]
+                 [-disableSelfCheck] [-nocomp] [-dump] [-iss] [-rtl_syn] [-rtl_fpga]
+```
+
 ## Horizontal rule
 
 A `---` on its own line draws a horizontal rule:
