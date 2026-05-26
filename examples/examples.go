@@ -19,32 +19,37 @@ import (
 	"github.com/yuin/goldmark/extension"
 
 	pdf "github.com/stephenafamo/goldmark-pdf"
-	gopdfBackend "github.com/stephenafamo/goldmark-pdf/gopdf"
+	"github.com/stephenafamo/goldmark-pdf/fpdf"
+	"github.com/stephenafamo/goldmark-pdf/gopdf"
 )
 
-// exampleConfig holds optional per-example hooks. Only the fpdf backend
-// supports HeaderFunc/FooterFunc in the current pre-merge gopdf code, so
-// gopdf renders without page chrome regardless of these fields. The zero
+// exampleConfig holds optional per-example hooks. Both backends now share
+// the same *Impl-pointer HeaderFunc/FooterFunc signature, so closures can
+// be written once per backend and dropped into either Config. The zero
 // value (returned by the map lookup for unknown keys) leaves every hook
 // nil.
 type exampleConfig struct {
-	fpdfHeader func(impl pdf.Fpdf, fc fonts.Cache) func()
-	fpdfFooter func(impl pdf.Fpdf, fc fonts.Cache) func()
+	fpdfHeader  func(impl *fpdf.Impl, fc fonts.Cache) func()
+	fpdfFooter  func(impl *fpdf.Impl, fc fonts.Cache) func()
+	gopdfHeader func(impl *gopdf.Impl, fc fonts.Cache) func()
+	gopdfFooter func(impl *gopdf.Impl, fc fonts.Cache) func()
 }
 
 // exampleConfigs keys on the .md basename. Add an entry to enable hooks
 // for a new example.
 var exampleConfigs = map[string]exampleConfig{
 	"header-footer": {
-		fpdfHeader: fpdfTitleBar,
-		fpdfFooter: fpdfPageNumber,
+		fpdfHeader:  fpdfTitleBar,
+		fpdfFooter:  fpdfPageNumber,
+		gopdfHeader: gopdfTitleBar,
+		gopdfFooter: gopdfPageNumber,
 	},
 }
 
 // fpdfTitleBar draws "Header / Footer Sample" in the top page margin.
 // Helvetica is gofpdf's built-in font so this works on page 1 without any
 // font-loading prep.
-func fpdfTitleBar(impl pdf.Fpdf, _ fonts.Cache) func() {
+func fpdfTitleBar(impl *fpdf.Impl, _ fonts.Cache) func() {
 	return func() {
 		_ = impl.SetFont("Helvetica", "B", 9)
 		ml, mt, mr, _ := impl.GetMargins()
@@ -56,7 +61,7 @@ func fpdfTitleBar(impl pdf.Fpdf, _ fonts.Cache) func() {
 }
 
 // fpdfPageNumber draws "Page N" centered in the bottom page margin.
-func fpdfPageNumber(impl pdf.Fpdf, _ fonts.Cache) func() {
+func fpdfPageNumber(impl *fpdf.Impl, _ fonts.Cache) func() {
 	return func() {
 		_ = impl.SetFont("Helvetica", "", 8)
 		ml, _, mr, mb := impl.GetMargins()
@@ -68,10 +73,32 @@ func fpdfPageNumber(impl pdf.Fpdf, _ fonts.Cache) func() {
 	}
 }
 
+func gopdfTitleBar(impl *gopdf.Impl, _ fonts.Cache) func() {
+	return func() {
+		_ = impl.SetFont("Roboto", "B", 9)
+		ml, mt, mr, _ := impl.GetMargins()
+		pw, _ := impl.GetPageSize()
+		impl.GoPdf.SetXY(ml, mt/2)
+		impl.SetTextColor(80, 80, 80)
+		impl.CellFormat(pw-ml-mr, 14, "Header / Footer Sample", "B", 0, "L", false, 0, "")
+	}
+}
+
+func gopdfPageNumber(impl *gopdf.Impl, _ fonts.Cache) func() {
+	return func() {
+		_ = impl.SetFont("Roboto", "", 8)
+		ml, _, mr, mb := impl.GetMargins()
+		pw, ph := impl.GetPageSize()
+		impl.GoPdf.SetXY(ml, ph-(mb/2)-10)
+		impl.SetTextColor(80, 80, 80)
+		impl.CellFormat(pw-ml-mr, 10, fmt.Sprintf("Page %d", impl.GoPdf.GetNumberOfPages()),
+			"T", 0, "C", false, 0, "")
+	}
+}
+
 // backends in render order. Each factory takes the title (the .md basename)
 // and the per-example config, and returns a pdf.Option that wires its
-// backend into the renderer. The gopdf factory ignores cfg because the
-// current InitConfig has no HeaderFunc/FooterFunc fields.
+// backend into the renderer.
 var backends = []struct {
 	name   string
 	option func(title string, cfg exampleConfig) pdf.Option
@@ -79,7 +106,7 @@ var backends = []struct {
 	{
 		name: "fpdf",
 		option: func(title string, cfg exampleConfig) pdf.Option {
-			return pdf.WithFpdf(context.Background(), pdf.FpdfConfig{
+			return pdf.WithFpdf(context.Background(), fpdf.Config{
 				Title:      title,
 				HeaderFunc: cfg.fpdfHeader,
 				FooterFunc: cfg.fpdfFooter,
@@ -88,10 +115,12 @@ var backends = []struct {
 	},
 	{
 		name: "gopdf",
-		option: func(title string, _ exampleConfig) pdf.Option {
-			return gopdfBackend.WithGoPdf(context.Background(), gopdfBackend.InitConfig{
-				Title: title,
-			})
+		option: func(title string, cfg exampleConfig) pdf.Option {
+			return pdf.WithPDF(gopdf.New(context.Background(), gopdf.Config{
+				Title:      title,
+				HeaderFunc: cfg.gopdfHeader,
+				FooterFunc: cfg.gopdfFooter,
+			}, nil))
 		},
 	},
 }

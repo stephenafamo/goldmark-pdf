@@ -1,4 +1,4 @@
-package pdf
+package fpdf
 
 import (
 	"context"
@@ -10,7 +10,7 @@ import (
 )
 
 // gofpdf panics on runes above the BMP (its Cw array is 65536 entries), so
-// substitute non-BMP runes with U+FFFD. Proper fix is the signintech/gopdf
+// substitute non-BMP runes with U+FFFD. Proper fix is the gopdf
 // backend (gopdf/), which handles them natively but is incomplete.
 // See https://github.com/stephenafamo/goldmark-pdf/issues/27.
 const (
@@ -36,25 +36,8 @@ func sanitizeUnicode(s string) string {
 	return s
 }
 
-type FpdfConfig struct {
-	Title   string
-	Subject string
-
-	Orientation string // Default Portrait
-	PaperSize   string // Default A4
-
-	Logo       io.Reader
-	LogoFormat string
-
-	// Header
-	HeaderFunc func(impl Fpdf, fontsCache fonts.Cache) func()
-
-	// Footer
-	FooterFunc func(impl Fpdf, fontsCache fonts.Cache) func()
-}
-
-func NewFpdf(ctx context.Context, c FpdfConfig, fontsCache fonts.Cache) *Fpdf {
-	fpdf := Fpdf{
+func New(ctx context.Context, c Config, fontsCache fonts.Cache) *Impl {
+	fpdf := Impl{
 		Fpdf:    gofpdf.New(c.Orientation, "pt", c.PaperSize, ""),
 		anchors: make(map[string]int),
 	}
@@ -63,12 +46,19 @@ func NewFpdf(ctx context.Context, c FpdfConfig, fontsCache fonts.Cache) *Fpdf {
 	fpdf.Fpdf.SetSubject(c.Subject, true)
 	fpdf.Fpdf.SetCellMargin(0)
 
+	// Pre-register the logo so HeaderFunc/FooterFunc closures can pull it
+	// up with impl.UseImage("logo", ...) without having to call
+	// RegisterImage themselves. Mirrors the gopdf backend's behavior.
+	if c.Logo != nil {
+		fpdf.RegisterImage("logo", c.LogoFormat, c.Logo)
+	}
+
 	if c.HeaderFunc != nil {
-		fpdf.Fpdf.SetHeaderFunc(c.HeaderFunc(fpdf, fontsCache))
+		fpdf.Fpdf.SetHeaderFunc(c.HeaderFunc(&fpdf, fontsCache))
 	}
 
 	if c.FooterFunc != nil {
-		fpdf.Fpdf.SetFooterFunc(c.FooterFunc(fpdf, fontsCache))
+		fpdf.Fpdf.SetFooterFunc(c.FooterFunc(&fpdf, fontsCache))
 	}
 
 	fpdf.AddPage()
@@ -83,74 +73,82 @@ type internalLink struct {
 	anchor        string
 }
 
-type Fpdf struct {
+type Impl struct {
 	Fpdf        *gofpdf.Fpdf
 	anchorLinks []internalLink
 	anchors     map[string]int
 }
 
 // Add a new page
-func (f Fpdf) AddPage() {
+func (f Impl) AddPage() {
 	f.Fpdf.AddPage()
 }
 
 // Position
-func (f Fpdf) GetX() float64 {
+func (f Impl) GetX() float64 {
 	return f.Fpdf.GetX()
 }
 
-func (f Fpdf) GetY() float64 {
+func (f Impl) GetY() float64 {
 	return f.Fpdf.GetY()
 }
 
-func (f Fpdf) SetX(x float64) {
+func (f Impl) SetX(x float64) {
 	f.Fpdf.SetX(x)
 }
 
-func (f Fpdf) SetY(y float64) {
+func (f Impl) SetY(y float64) {
 	f.Fpdf.SetY(y)
 }
 
 // Page size
-func (f Fpdf) GetPageSize() (width float64, height float64) {
+func (f Impl) GetPageSize() (width float64, height float64) {
 	return f.Fpdf.GetPageSize()
 }
 
 // Margins
-func (f Fpdf) SetMarginLeft(margin float64) {
+func (f Impl) SetMarginLeft(margin float64) {
 	f.Fpdf.SetLeftMargin(margin)
 }
 
-func (f Fpdf) SetMarginRight(margin float64) {
+func (f Impl) SetMarginRight(margin float64) {
 	f.Fpdf.SetRightMargin(margin)
 }
 
-func (f Fpdf) SetMarginTop(margin float64) {
+func (f Impl) SetMarginTop(margin float64) {
 	f.Fpdf.SetTopMargin(margin)
 }
 
-func (f Fpdf) SetFont(family string, style string, size int) error {
+// SetMarginBottom sets the bottom page margin via gofpdf's auto-page-break
+// trigger — that's the only way gofpdf exposes the bottom margin, since
+// gofpdf.SetMargins only accepts left/top/right. Always re-enables auto
+// page break so the renderer's page-break expectations hold.
+func (f Impl) SetMarginBottom(margin float64) {
+	f.Fpdf.SetAutoPageBreak(true, margin)
+}
+
+func (f Impl) SetFont(family string, style string, size int) error {
 	f.Fpdf.SetFont(family, style, float64(size))
 	return nil
 }
 
 // Writing
-func (f Fpdf) WriteText(height float64, text string) {
+func (f Impl) WriteText(height float64, text string) {
 	f.Fpdf.Write(height, sanitizeUnicode(text))
 }
 
-func (f Fpdf) CellFormat(w float64, h float64, txtStr string, borderStr string, ln int, alignStr string, fill bool, link int, linkStr string) {
+func (f Impl) CellFormat(w float64, h float64, txtStr string, borderStr string, ln int, alignStr string, fill bool, link int, linkStr string) {
 	f.Fpdf.SetCellMargin(0)
 	f.Fpdf.CellFormat(w, h, sanitizeUnicode(txtStr), borderStr, ln, alignStr, fill, link, linkStr)
 }
 
-func (f *Fpdf) AddInternalLink(anchor string) {
+func (f *Impl) AddInternalLink(anchor string) {
 	linkID := f.Fpdf.AddLink()
 	f.Fpdf.SetLink(linkID, f.GetY(), -1)
 	f.anchors[anchor] = linkID
 }
 
-func (f *Fpdf) WriteInternalLink(lineHeight float64, text string, anchor string) {
+func (f *Impl) WriteInternalLink(lineHeight float64, text string, anchor string) {
 	text = sanitizeUnicode(text)
 	f.anchorLinks = append(f.anchorLinks, internalLink{
 		page:   f.Fpdf.PageNo(),
@@ -163,29 +161,29 @@ func (f *Fpdf) WriteInternalLink(lineHeight float64, text string, anchor string)
 	f.Fpdf.WriteLinkString(lineHeight, text, "#"+anchor)
 }
 
-func (f Fpdf) WriteExternalLink(lineHeight float64, text string, destination string) {
+func (f Impl) WriteExternalLink(lineHeight float64, text string, destination string) {
 	f.Fpdf.WriteLinkString(lineHeight, sanitizeUnicode(text), destination)
 }
 
-func (f Fpdf) BR(height float64) {
+func (f Impl) BR(height float64) {
 	f.Fpdf.Ln(height)
 }
 
 // Images
-func (f Fpdf) RegisterImage(id string, format string, src io.Reader) {
+func (f Impl) RegisterImage(id string, format string, src io.Reader) {
 	f.Fpdf.RegisterImageOptionsReader(id, gofpdf.ImageOptions{ImageType: format, ReadDpi: false}, src)
 }
 
-func (f Fpdf) UseImage(imgID string, x, y, w, h float64) {
+func (f Impl) UseImage(imgID string, x, y, w, h float64) {
 	f.Fpdf.ImageOptions(imgID, x, y, w, h, true, gofpdf.ImageOptions{ImageType: "", ReadDpi: false}, 0, "")
 }
 
 // Measuring
-func (f Fpdf) MeasureTextWidth(text string) float64 {
+func (f Impl) MeasureTextWidth(text string) float64 {
 	return f.Fpdf.GetStringWidth(sanitizeUnicode(text))
 }
 
-func (f Fpdf) SplitText(txt string, w float64) []string {
+func (f Impl) SplitText(txt string, w float64) []string {
 	lines := f.Fpdf.SplitLines([]byte(sanitizeUnicode(txt)), w)
 
 	split := make([]string, len(lines))
@@ -197,32 +195,32 @@ func (f Fpdf) SplitText(txt string, w float64) []string {
 }
 
 // Colors
-func (f Fpdf) SetDrawColor(r uint8, g uint8, b uint8) {
+func (f Impl) SetDrawColor(r uint8, g uint8, b uint8) {
 	f.Fpdf.SetDrawColor(int(r), int(g), int(b))
 }
 
-func (f Fpdf) SetFillColor(r uint8, g uint8, b uint8) {
+func (f Impl) SetFillColor(r uint8, g uint8, b uint8) {
 	f.Fpdf.SetFillColor(int(r), int(g), int(b))
 }
 
-func (f Fpdf) SetTextColor(r uint8, g uint8, b uint8) {
+func (f Impl) SetTextColor(r uint8, g uint8, b uint8) {
 	f.Fpdf.SetTextColor(int(r), int(g), int(b))
 }
 
 // Width
-func (f Fpdf) SetLineWidth(width float64) {
+func (f Impl) SetLineWidth(width float64) {
 	f.Fpdf.SetLineWidth(width)
 }
 
-func (f Fpdf) Line(x1 float64, y1 float64, x2 float64, y2 float64) {
+func (f Impl) Line(x1 float64, y1 float64, x2 float64, y2 float64) {
 	f.Fpdf.Line(x1, y1, x2, y2)
 }
 
-func (f Fpdf) Circle(x, y, r float64) {
+func (f Impl) Circle(x, y, r float64) {
 	f.Fpdf.Circle(x, y, r, "F")
 }
 
-func (f Fpdf) Write(w io.Writer) error {
+func (f Impl) Write(w io.Writer) error {
 	// write the internal links
 	for _, link := range f.anchorLinks {
 		id, ok := f.anchors[link.anchor]
@@ -238,11 +236,11 @@ func (f Fpdf) Write(w io.Writer) error {
 	return f.Fpdf.Output(w)
 }
 
-func (f Fpdf) GetMargins() (left, top, right, bottom float64) {
+func (f Impl) GetMargins() (left, top, right, bottom float64) {
 	return f.Fpdf.GetMargins()
 }
 
-func (f Fpdf) AddFont(family string, style string, data []byte) error {
+func (f Impl) AddFont(family string, style string, data []byte) error {
 	f.Fpdf.AddUTF8FontFromBytes(family, style, data)
 	return nil
 }

@@ -37,6 +37,8 @@ func (m *MockPdf) AddFont(family, style string, data []byte) error { return nil 
 func (m *MockPdf) SetLineWidth(width float64)                      {}
 func (m *MockPdf) SetMarginLeft(margin float64)                    {}
 func (m *MockPdf) SetMarginRight(margin float64)                   {}
+func (m *MockPdf) SetMarginTop(margin float64)                     {}
+func (m *MockPdf) SetMarginBottom(margin float64)                  {}
 func (m *MockPdf) SetTextColor(r, g, b uint8)                      {}
 func (m *MockPdf) SetX(x float64)                                  {}
 func (m *MockPdf) SetY(y float64)                                  {}
