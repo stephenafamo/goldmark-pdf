@@ -82,6 +82,12 @@ goldmark.New(
 )
 ```
 
+### HTML escaping
+
+By default. the renderer HTML-escapes literal text, which means characters like `<`, `>`, and `&` are written into the PDF as `&lt;`, `&gt;`, `&amp;` — the right thing for an HTML document but visible noise in a PDF. 
+
+Pass `pdf.WithEscapeHTML(false)` to emit those characters as-is. This is what you want when the source contains inline code or fenced blocks with HTML-like content, e.g. `` `<strong>bold</strong>` `` should appear with its angle brackets intact rather than as `&lt;strong&gt;bold&lt;/strong&gt;`.
+
 ## Fonts
 
 The fonts that can be used in the PDF are based on the `Font` struct
