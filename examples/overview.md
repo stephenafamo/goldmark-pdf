@@ -133,9 +133,13 @@ usage: cbench.py [-h] -cpp CPP [-hwroot HWROOT] [-rundir RUNDIR] [-plusArgsVlog 
 
 ## Images
 
-Images can be loaded from a remote URL. The Markdown alt text doubles as a caption beneath the image:
+Images can be loaded from a remote URL. The Markdown alt text doubles as a caption beneath the image. Images whose natural dimensions fit within the page's content area are rendered at their natural size — the picture below is 300×200, comfortably smaller than the A4 content width:
 
-![A mountain landscape (Lorem Picsum stock photo id 1015).](https://picsum.photos/id/1015/640/360.jpg)
+![A mountain landscape (Lorem Picsum stock photo id 1015).](https://picsum.photos/id/1015/300/200.jpg)
+
+Images whose natural dimensions exceed the page's content area are scaled down to fit. The picture below is 2000×1500 — roughly four times wider than the A4 content width — and gets shrunk on the way in:
+
+![A lakeside scene (Lorem Picsum stock photo id 1018).](https://picsum.photos/id/1018/2000/1500.jpg)
 
 
 ## Horizontal rule

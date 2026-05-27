@@ -43,6 +43,10 @@ type PDF interface {
 	// Images
 	RegisterImage(id, format string, src io.Reader)
 	UseImage(id string, x, y, w, h float64)
+	// ImageNaturalSize returns a previously registered image's natural
+	// width/height in user units (points, assuming 72 DPI). Returns (0, 0)
+	// if the image is unknown or its dimensions couldn't be determined.
+	ImageNaturalSize(id string) (w, h float64)
 
 	// Measuring
 	MeasureTextWidth(text string) float64

@@ -60,6 +60,7 @@ func (m *MockPdf) SplitText(txt string, w float64) []string {
 	return lines
 }
 func (m *MockPdf) UseImage(id string, x, y, w, h float64)                           {}
+func (m *MockPdf) ImageNaturalSize(id string) (float64, float64)                    { return 0, 0 }
 func (m *MockPdf) Write(w io.Writer) error                                          { return nil }
 func (m *MockPdf) WriteText(h float64, txtStr string)                               {}
 func (m *MockPdf) WriteInternalLink(lineHeight float64, text string, anchor string) {}
