@@ -51,8 +51,8 @@ type Config struct {
 	// A cache for the fonts
 	FontsCache fonts.Cache
 
-	// For debugging
-	TraceWriter io.Writer
+	// Receives trace/warning events. nil disables logging.
+	Logger *slog.Logger
 
 	NodeRenderers util.PrioritizedSlice
 }
@@ -66,7 +66,7 @@ An example with some more options:
 goldmark.New(
     goldmark.WithRenderer(
         pdf.New(
-            pdf.WithTraceWriter(os.Stdout),
+            pdf.WithLogger(slog.Default()),
             pdf.WithContext(context.Background()),
             pdf.WithImageFS(os.DirFS(".")),
             pdf.WithLinkColor("cc4578"),
@@ -84,9 +84,39 @@ goldmark.New(
 
 ### HTML escaping
 
-By default. the renderer HTML-escapes literal text, which means characters like `<`, `>`, and `&` are written into the PDF as `&lt;`, `&gt;`, `&amp;` — the right thing for an HTML document but visible noise in a PDF. 
+By default, the renderer HTML-escapes literal text, which means characters like `<`, `>`, and `&` are written into the PDF as `&lt;`, `&gt;`, `&amp;` — the right thing for an HTML document but visible noise in a PDF. 
 
 Pass `pdf.WithEscapeHTML(false)` to emit those characters as-is. This is what you want when the source contains inline code or fenced blocks with HTML-like content, e.g. `` `<strong>bold</strong>` `` should appear with its angle brackets intact rather than as `&lt;strong&gt;bold&lt;/strong&gt;`.
+
+### Logging
+
+The renderer emits two kinds of events through `log/slog`:
+
+- **Debug** — verbose AST-walk trace (one record per node enter/leave), useful for diagnosing layout issues. Each record carries `msg` (detail) and `depth` (stack depth) attributes.
+- **Warn** — recoverable problems such as a missing image. The PDF is still produced; the warning lets the caller know something was skipped.
+
+Logging is opt-in. By default `Config.Logger` is `nil` and both `LogDebug` and `LogWarn` are no-ops, so nothing is written to stderr unless you ask for it.
+
+To opt in, pass `pdf.WithLogger(...)` with the slog logger you want to route events through:
+
+```go
+// Use the process-wide slog default (writes Info+ to stderr by default).
+pdf.WithLogger(slog.Default())
+
+// Or build a dedicated logger — e.g. JSON to a file, with Warn level filtering.
+logger := slog.New(slog.NewJSONHandler(f, &slog.HandlerOptions{Level: slog.LevelWarn}))
+pdf.WithLogger(logger)
+```
+
+The Debug records are emitted for every node enter/leave, so a real document produces thousands of them. Most callers only care about warnings — restrict the handler's level to drop the trace noise:
+
+```go
+// Only surface warnings (e.g. missing images); ignore the AST-walk trace.
+logger := slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{
+    Level: slog.LevelWarn,
+}))
+pdf.WithLogger(logger)
+```
 
 ## Fonts
 

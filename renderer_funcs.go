@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"image/color"
 	"io"
-	"log"
 	"strings"
 
 	"github.com/alecthomas/chroma/v2"
@@ -645,10 +644,9 @@ func (r *nodeRederFuncs) renderImage(w *Writer, source []byte, node ast.Node, en
 				SetStyle(w.Pdf, w.States.peek().textStyle)
 			}
 			return ast.WalkSkipChildren, nil
-		} else {
-			log.Printf("IMAGE ERROR: %s, %v", imgPath, err)
-			w.LogDebug("Image (file error)", err.Error())
 		}
+
+		w.LogWarn("Image (internal)", fmt.Sprintf("%q: %v", imgPath, err))
 	} else {
 		w.LogDebug("Image (leaving)", "")
 	}

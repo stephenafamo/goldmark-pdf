@@ -3,7 +3,7 @@ package pdf
 import (
 	"context"
 	goldrender "github.com/yuin/goldmark/renderer"
-	"io"
+	"log/slog"
 	"net/http"
 	"os"
 
@@ -26,8 +26,10 @@ type Config struct {
 	// A cache for the fonts
 	FontsCache fonts.Cache
 
-	// For debugging
-	TraceWriter io.Writer
+	// Logger receives trace and warning events from the renderer. A nil
+	// Logger disables all logging — use WithLogger(slog.Default()) (or any
+	// configured logger) to enable.
+	Logger *slog.Logger
 
 	NodeRenderers util.PrioritizedSlice
 }

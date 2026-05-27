@@ -4,7 +4,7 @@ import (
 	"context"
 	goldrender "github.com/yuin/goldmark/renderer"
 	"image/color"
-	"io"
+	"log/slog"
 	"net/http"
 
 	"github.com/alecthomas/chroma/v2"
@@ -67,10 +67,12 @@ func WithLinkColor(val color.Color) Option {
 	})
 }
 
-// Provide an io.Write where debug information will be written to
-func WithTraceWriter(val io.Writer) Option {
+// WithLogger sets the slog.Logger used by the renderer for trace and warning
+// events (e.g. missing images). Pass nil (or omit the option entirely) to
+// disable logging.
+func WithLogger(l *slog.Logger) Option {
 	return OptionFunc(func(c *Config) {
-		c.TraceWriter = val
+		c.Logger = l
 	})
 }
 

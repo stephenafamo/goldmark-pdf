@@ -3,9 +3,9 @@ package pdf
 import (
 	"bufio"
 	"bytes"
-	"fmt"
+	"context"
 	"image/color"
-	"io"
+	"log/slog"
 	"net/http"
 	"strconv"
 	"strings"
@@ -22,16 +22,34 @@ type Writer struct {
 	Styles  Styles
 	States  states
 
-	EscapeHTML  bool
-	DebugWriter io.Writer
+	EscapeHTML bool
+	// Logger receives trace and warning events from the renderer. A nil
+	// Logger disables all logging — set one to opt in.
+	Logger *slog.Logger
 }
 
-// To log debug information. Nothing is logged if DebugWriter is nil
+// LogDebug emits a debug trace event with the source as the slog message and
+// a "msg" attribute carrying the details. If no Logger is configured the call
+// is dropped — debug trace is opt-in.
 func (r *Writer) LogDebug(source, msg string) {
-	if r.DebugWriter != nil {
-		indent := strings.Repeat("-", len(r.States.stack)-1)
-		_, _ = fmt.Fprintf(r.DebugWriter, "%v[%v] %v\n", indent, source, msg)
+	if r.Logger == nil {
+		return
 	}
+	r.Logger.LogAttrs(context.Background(), slog.LevelDebug, source,
+		slog.String("msg", msg),
+		slog.Int("depth", len(r.States.stack)-1),
+	)
+}
+
+// LogWarn reports a recoverable problem (e.g. a missing image) at slog warn
+// level. A nil Logger disables the message — opt in by passing WithLogger.
+func (r *Writer) LogWarn(source, msg string) {
+	if r.Logger == nil {
+		return
+	}
+	r.Logger.LogAttrs(context.Background(), slog.LevelWarn, source,
+		slog.String("msg", msg),
+	)
 }
 
 // Write a string with a given style
