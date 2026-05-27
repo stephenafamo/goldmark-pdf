@@ -27,6 +27,12 @@ Adjacent formats compose: a **bold word with *italic inside* and back**, or a li
 A line ending with two spaces forces a hard break,  
 so this sentence starts on a new line within the same paragraph.
 
+Inline code preserves HTML-like syntax literally: `<strong>bold text</strong>` and
+`<p>paragraph</p>` should appear with their angle brackets intact rather than being
+interpreted as tags. This requires `pdf.WithEscapeHTML(false)` — otherwise the
+angle brackets render as `&lt;` / `&gt;`. The example renderer (`examples/examples.go`)
+sets this option.
+
 ## Links
 
 External links: [goldmark](https://github.com/yuin/goldmark) and [gofpdf](https://github.com/phpdave11/gofpdf). Inline-code link text also works: [`pdf.New()`](https://pkg.go.dev/github.com/stephenafamo/goldmark-pdf#New).
@@ -101,6 +107,14 @@ A shell session:
 $ go run ./examples
 2026/05/19 22:56:59 sample [fpdf]  → examples/sample.fpdf.pdf
 2026/05/19 22:56:59 sample [gopdf] → examples/sample.gopdf.pdf
+```
+
+A fenced block containing HTML tags — angle brackets must not be re-interpreted
+as markup inside code (also gated on `pdf.WithEscapeHTML(false)`):
+
+```html
+<strong>bold text</strong>
+<p>paragraph</p>
 ```
 
 Indented code (four-space prefix) also works without a language tag:
