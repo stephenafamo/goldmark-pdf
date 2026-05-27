@@ -53,7 +53,7 @@ func (r *renderer) Register(kind ast.NodeKind, v NodeRendererFunc) {
 	}
 }
 
-// Render renders the given AST node to the given writer.
+// Render the given AST node to the given writer.
 func (r *renderer) Render(w io.Writer, source []byte, n ast.Node) error {
 	r.initSync.Do(func() {
 		// r.options = r.config.Options
@@ -97,12 +97,12 @@ func (r *renderer) Render(w io.Writer, source []byte, n ast.Node) error {
 	}
 
 	writer := &Writer{
-		Pdf:         pdf,
-		ImageFS:     mergeFs(r.config.ImageFS, &inlineFs{}, &webFs{}),
-		Styles:      r.config.Styles,
-		DebugWriter: r.config.TraceWriter,
-		States:      states{stack: make([]*state, 0)},
-		EscapeHTML:  escapeHTML,
+		Pdf:        pdf,
+		ImageFS:    mergeFs(r.config.ImageFS, &inlineFs{}, &webFs{}),
+		Styles:     r.config.Styles,
+		Logger:     r.config.Logger,
+		States:     states{stack: make([]*state, 0)},
+		EscapeHTML: escapeHTML,
 	}
 
 	mleft, _, _, _ := pdf.GetMargins()
