@@ -178,6 +178,14 @@ func (f Impl) UseImage(imgID string, x, y, w, h float64) {
 	f.Fpdf.ImageOptions(imgID, x, y, w, h, true, gofpdf.ImageOptions{ImageType: "", ReadDpi: false}, 0, "")
 }
 
+func (f Impl) ImageNaturalSize(imgID string) (float64, float64) {
+	info := f.Fpdf.GetImageInfo(imgID)
+	if info == nil {
+		return 0, 0
+	}
+	return info.Width(), info.Height()
+}
+
 // Measuring
 func (f Impl) MeasureTextWidth(text string) float64 {
 	return f.Fpdf.GetStringWidth(sanitizeUnicode(text))

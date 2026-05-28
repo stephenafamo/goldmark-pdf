@@ -593,6 +593,13 @@ func (f *Impl) RegisterImage(id string, format string, src io.Reader) {
 	}
 }
 
+func (f *Impl) ImageNaturalSize(imgID string) (float64, float64) {
+	if img, ok := f.images[imgID]; ok {
+		return img.naturalWidth, img.naturalHeight
+	}
+	return 0, 0
+}
+
 func (f *Impl) UseImage(imgID string, x, y, w, h float64) {
 	img, ok := f.images[imgID]
 	if !ok {

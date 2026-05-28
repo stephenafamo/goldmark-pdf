@@ -616,7 +616,18 @@ func (r *nodeRederFuncs) renderImage(w *Writer, source []byte, node ast.Node, en
 
 			mimeType := getFileMime(imgFile)
 			w.Pdf.RegisterImage(imgPath, getImageMime(mimeType), imgFile)
-			w.Pdf.UseImage(imgPath, mleft*2, w.Pdf.GetY(), maxw, 0)
+
+			// Honor the image's natural size when it fits within the content
+			// area; only scale down when it would overflow. Smaller images get
+			// horizontally centered within the content area so the caption
+			// (kept at maxw) sits visually under them.
+			drawX := mleft * 2
+			drawW := maxw
+			if naturalW, _ := w.Pdf.ImageNaturalSize(imgPath); naturalW > 0 && naturalW < maxw {
+				drawW = naturalW
+				drawX = mleft*2 + (maxw-naturalW)/2
+			}
+			w.Pdf.UseImage(imgPath, drawX, w.Pdf.GetY(), drawW, 0)
 
 			// Concatenates the text content of an inline node's descendants.
 			// Used to build a plain-text caption from an image's alt-text children.
