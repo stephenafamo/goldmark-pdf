@@ -68,7 +68,7 @@ goldmark.New(
         pdf.New(
             pdf.WithLogger(slog.Default()),
             pdf.WithContext(context.Background()),
-            pdf.WithImageFS(os.DirFS(".")),
+            pdf.WithImageFS(http.FS(os.DirFS("."))),
             pdf.WithLinkColor("cc4578"),
             pdf.WithHeadingFont(pdf.GetTextFont("IBM Plex Serif", pdf.FontLora)),
             pdf.WithBodyFont(pdf.GetTextFont("Open Sans", pdf.FontRoboto)),
