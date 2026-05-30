@@ -141,17 +141,25 @@ func (r *nodeRederFuncs) renderText(w *Writer, source []byte, node ast.Node, ent
 		return ast.WalkContinue, nil
 	}
 
-	// Soft line breaks (a bare newline in the source between inline content)
-	// aren't part of the segment value — goldmark exposes them via a flag.
-	// CommonMark renders them as a space when reflowing inline text, so we
-	// append one. Without this, content like "[link](url)\nnext word" runs
-	// the two together as "linknext".
-	n := node.(*ast.Text)
-	text := string(n.Segment.Value(source))
-	if n.SoftLineBreak() {
-		text += " "
+	// Both KindText and KindString are registered to this func. *ast.String
+	// is emitted by extensions (e.g. Typographer's smart-quote/dash/ellipsis
+	// substitutions) and stores its bytes directly on Value rather than via
+	// a source Segment.
+	switch n := node.(type) {
+	case *ast.Text:
+		// Soft line breaks (a bare newline in the source between inline
+		// content) aren't part of the segment value — goldmark exposes them
+		// via a flag. CommonMark renders them as a space when reflowing
+		// inline text, so we append one. Without this, content like
+		// "[link](url)\nnext word" runs the two together as "linknext".
+		text := string(n.Segment.Value(source))
+		if n.SoftLineBreak() {
+			text += " "
+		}
+		w.WriteText(text)
+	case *ast.String:
+		w.WriteText(string(n.Value))
 	}
-	w.WriteText(text)
 
 	return ast.WalkContinue, nil
 }
