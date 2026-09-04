@@ -103,3 +103,24 @@ A paragraph below the table to confirm the renderer leaves the cursor in a
 sensible position once table rendering finishes — no overlap with the last
 row's border, no spurious blank page, and inline formatting still works:
 **bold**, *italic*, `inline code`, and a [link](https://example.com/).
+
+## 5. Row taller than a page
+
+The STATUS row below has a description cell whose wrapped text is taller than
+a full page. Since a single row can never fit on one page, the renderer must
+split the row across pages instead of falling back to one page per cell. Every
+cell in the row should stay column-aligned on each page, the row's borders
+should close at the bottom of each page and reopen at the top of the next, and
+the short cells (mnemonic, width, ...) should only show their text on the first
+page of the row.
+
+| **Mnemonic** | **Width** | **Access** | Address | Reset | **Description** | Available |
+| ------------ | --------- | ---------- | ------- | ----- | --------------- | --------- |
+| START        | 32        | WO         | 0x0     | 0     | Write with the lower 32 bits of the kernel start address. | All configs |
+| STATUS       | 3         | RO         | 0x4     | 0     | State 1: the controller holds this state while sub-unit 1 finishes its outstanding transactions, drains its write buffers, and acknowledges through the mailbox. Transitions to state 2 once every pending acknowledgement has been observed by the arbiter and the watchdog has been re-armed. State 2: the controller holds this state while sub-unit 2 finishes its outstanding transactions, drains its write buffers, and acknowledges through the mailbox. Transitions to state 3 once every pending acknowledgement has been observed by the arbiter and the watchdog has been re-armed. State 3: the controller holds this state while sub-unit 3 finishes its outstanding transactions, drains its write buffers, and acknowledges through the mailbox. Transitions to state 4 once every pending acknowledgement has been observed by the arbiter and the watchdog has been re-armed. State 4: the controller holds this state while sub-unit 4 finishes its outstanding transactions, drains its write buffers, and acknowledges through the mailbox. Transitions to state 5 once every pending acknowledgement has been observed by the arbiter and the watchdog has been re-armed. State 5: the controller holds this state while sub-unit 5 finishes its outstanding transactions, drains its write buffers, and acknowledges through the mailbox. Transitions to state 6 once every pending acknowledgement has been observed by the arbiter and the watchdog has been re-armed. State 6: the controller holds this state while sub-unit 6 finishes its outstanding transactions, drains its write buffers, and acknowledges through the mailbox. Transitions to state 7 once every pending acknowledgement has been observed by the arbiter and the watchdog has been re-armed. State 7: the controller holds this state while sub-unit 7 finishes its outstanding transactions, drains its write buffers, and acknowledges through the mailbox. Transitions to state 8 once every pending acknowledgement has been observed by the arbiter and the watchdog has been re-armed. State 8: the controller holds this state while sub-unit 8 finishes its outstanding transactions, drains its write buffers, and acknowledges through the mailbox. Transitions to state 9 once every pending acknowledgement has been observed by the arbiter and the watchdog has been re-armed.  | All configs |
+| RESUME       | 1         | WO         | 0x8     | 0     | Write 1 to resume a kernel that is waiting in the blocked state. | All configs |
+
+### After the tall row
+
+Body text after the split row should continue directly below the table's
+closing border on whichever page the table finished.
